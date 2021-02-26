@@ -42,3 +42,6 @@ user.props
 # Generated rst files
 ######################
 genrst/
+
+# Qt Creator Project file
+*.qbs.user
