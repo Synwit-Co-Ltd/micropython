@@ -1,0 +1,42 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/*.o": true,
+			"**/*.P": true,
+			"**/ports/[!s]*": true,
+			"**/ports/*[!s]": true,
+		},
+		"C_Cpp.default.compilerPath": "D:/Ubuntu/bin/gcc-arm-win/bin/arm-none-eabi-gcc.exe",
+		"C_Cpp.default.includePath": [
+			"${workspaceFolder}/**"
+		],
+		"C_Cpp.default.defines": [
+		],
+		"files.associations": {
+			"*.h": "c"
+		}
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "cortex-debug",
+				"name": "Cortex Debug",
+				"cwd": "${workspaceRoot}/ports/swm34s/",
+				"executable": "./build-SWM34SLite/micropython.elf",
+				"runToEntryPoint": "main",
+				"request": "launch",
+				"servertype": "jlink",
+				"interface": "swd",
+				"device": "Cortex-M33",
+				"svdFile": "ports/swm34s/SWM341.svd",
+				"loadFiles": []
+			}
+		]
+	}
+}
