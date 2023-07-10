@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/*.o": true,
+			"**/*.P": true,
+			"**/ports/[!s]*": true,
+			"**/ports/*[!0]": true,
+		},
+		"C_Cpp.default.compilerPath": "D:/Ubuntu/bin/gcc-arm-win/bin/arm-none-eabi-gcc.exe",
+		"C_Cpp.default.includePath": [
+			"${workspaceFolder}/**"
+		],
+		"C_Cpp.default.defines": [
+		],
+		"cortex-debug.registerUseNaturalFormat": false,
+		"files.associations": {
+			"*.h": "c"
+		}
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "cortex-debug",
+				"name": "Cortex Debug",
+				"cwd": "${workspaceRoot}/ports/swm320/",
+				"executable": "./build-SWM320Lite/micropython.elf",
+				"runToEntryPoint": "main",
+				"request": "launch",
+				"servertype": "jlink",
+				"interface": "swd",
+				"device": "Cortex-M4",
+				"svdFile": "ports/swm320/SWM320.svd",
+				"loadFiles": []
+			}
+		]
+	}
+}
