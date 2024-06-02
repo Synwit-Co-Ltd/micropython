@@ -40,6 +40,36 @@
 #include "nrf_clock.h"
 #endif
 
+#if !defined(USE_WORKAROUND_FOR_ANOMALY_132) && \
+    (defined(NRF52832_XXAA) || defined(NRF52832_XXAB))
+// ANOMALY 132 - LFCLK needs to avoid frame from 66us to 138us after LFCLK stop.
+#define USE_WORKAROUND_FOR_ANOMALY_132 1
+#endif
+
+#if USE_WORKAROUND_FOR_ANOMALY_132
+#include "soc/nrfx_coredep.h"
+#endif
+
+void mp_nrf_start_lfclk(void) {
+    if (!nrf_clock_lf_start_task_status_get(NRF_CLOCK)) {
+        // Check if the clock was recently stopped but is still running.
+        #if USE_WORKAROUND_FOR_ANOMALY_132
+        bool was_running = nrf_clock_lf_is_running(NRF_CLOCK);
+        // If so, wait for it to stop. This ensures that the delay for anomaly 132 workaround does
+        // not land us in the middle of the forbidden interval.
+        while (nrf_clock_lf_is_running(NRF_CLOCK)) {
+        }
+        // If the clock just stopped, we can start it again right away as we are certainly before
+        // the forbidden 66-138us interval. Otherwise, apply a delay of 138us to make sure we are
+        // after the interval.
+        if (!was_running) {
+            nrfx_coredep_delay_us(138);
+        }
+        #endif
+        nrf_clock_task_trigger(NRF_CLOCK, NRF_CLOCK_TASK_LFCLKSTART);
+    }
+}
+
 #if MICROPY_PY_TIME_TICKS
 
 // Use RTC1 for time ticks generation (ms and us) with 32kHz tick resolution
@@ -86,7 +116,7 @@ const nrfx_rtc_config_t rtc_config_time_ticks = {
     #endif
 };
 
-STATIC void rtc_irq_time(nrfx_rtc_int_type_t event) {
+static void rtc_irq_time(nrfx_rtc_int_type_t event) {
     // irq handler for overflow
     if (event == NRFX_RTC_INT_OVERFLOW) {
         rtc_overflows += 1;
@@ -99,9 +129,7 @@ STATIC void rtc_irq_time(nrfx_rtc_int_type_t event) {
 
 void rtc1_init_time_ticks(void) {
     // Start the low-frequency clock (if it hasn't been started already)
-    if (!nrf_clock_lf_is_running(NRF_CLOCK)) {
-        nrf_clock_task_trigger(NRF_CLOCK, NRF_CLOCK_TASK_LFCLKSTART);
-    }
+    mp_nrf_start_lfclk();
     // Uninitialize first, then set overflow IRQ and first CC event
     nrfx_rtc_uninit(&rtc1);
     nrfx_rtc_init(&rtc1, &rtc_config_time_ticks, rtc_irq_time);
@@ -175,11 +203,11 @@ void mp_hal_set_interrupt_char(int c) {
 #if !MICROPY_PY_BLE_NUS && !MICROPY_HW_USB_CDC
 uintptr_t mp_hal_stdio_poll(uintptr_t poll_flags) {
     uintptr_t ret = 0;
-    if ((poll_flags & MP_STREAM_POLL_RD) && MP_STATE_PORT(board_stdio_uart) != NULL
-        && uart_rx_any(MP_STATE_PORT(board_stdio_uart))) {
+    if ((poll_flags & MP_STREAM_POLL_RD) && MP_STATE_VM(dupterm_objs[0]) != MP_OBJ_NULL
+        && uart_rx_any(MP_STATE_VM(dupterm_objs[0]))) {
         ret |= MP_STREAM_POLL_RD;
     }
-    if ((poll_flags & MP_STREAM_POLL_WR) && MP_STATE_PORT(board_stdio_uart) != NULL) {
+    if ((poll_flags & MP_STREAM_POLL_WR) && MP_STATE_VM(dupterm_objs[0]) != MP_OBJ_NULL) {
         ret |= MP_STREAM_POLL_WR;
     }
     return ret;
@@ -187,8 +215,8 @@ uintptr_t mp_hal_stdio_poll(uintptr_t poll_flags) {
 
 int mp_hal_stdin_rx_chr(void) {
     for (;;) {
-        if (MP_STATE_PORT(board_stdio_uart) != NULL && uart_rx_any(MP_STATE_PORT(board_stdio_uart))) {
-            return uart_rx_char(MP_STATE_PORT(board_stdio_uart));
+        if (MP_STATE_VM(dupterm_objs[0]) != MP_OBJ_NULL && uart_rx_any(MP_STATE_VM(dupterm_objs[0]))) {
+            return uart_rx_char(MP_STATE_VM(dupterm_objs[0]));
         }
         MICROPY_EVENT_POLL_HOOK
     }
@@ -196,15 +224,17 @@ int mp_hal_stdin_rx_chr(void) {
     return 0;
 }
 
-void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
-    if (MP_STATE_PORT(board_stdio_uart) != NULL) {
-        uart_tx_strn(MP_STATE_PORT(board_stdio_uart), str, len);
+mp_uint_t mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
+    if (MP_STATE_VM(dupterm_objs[0]) != MP_OBJ_NULL) {
+        uart_tx_strn(MP_STATE_VM(dupterm_objs[0]), str, len);
+        return len;
     }
+    return 0;
 }
 
 void mp_hal_stdout_tx_strn_cooked(const char *str, mp_uint_t len) {
-    if (MP_STATE_PORT(board_stdio_uart) != NULL) {
-        uart_tx_strn_cooked(MP_STATE_PORT(board_stdio_uart), str, len);
+    if (MP_STATE_VM(dupterm_objs[0]) != MP_OBJ_NULL) {
+        uart_tx_strn_cooked(MP_STATE_VM(dupterm_objs[0]), str, len);
     }
 }
 #endif
@@ -377,5 +407,3 @@ const char *nrfx_error_code_lookup(uint32_t err_code) {
 }
 
 #endif // NRFX_LOG_ENABLED
-
-MP_REGISTER_ROOT_POINTER(struct _machine_hard_uart_obj_t *board_stdio_uart);

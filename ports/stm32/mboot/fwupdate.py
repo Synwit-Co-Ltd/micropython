@@ -3,12 +3,13 @@
 
 from micropython import const
 import struct, time
-import zlib, machine, stm
+import deflate, machine, stm
 
 # Constants to be used with update_mpy
 VFS_FAT = 1
 VFS_LFS1 = 2
 VFS_LFS2 = 3
+VFS_RAW = 4
 
 # Constants for creating mboot elements.
 _ELEM_TYPE_END = const(1)
@@ -36,7 +37,7 @@ def dfu_read(filename):
     if hdr == b"Dfu":
         pass
     elif hdr == b"\x1f\x8b\x08":
-        f = zlib.DecompIO(f, 16 + 15)
+        f = deflate.DeflateIO(f, deflate.GZIP)
     else:
         print("Invalid firmware", filename)
         return None
@@ -226,28 +227,45 @@ def _create_element(kind, body):
 
 
 def update_app_elements(
-    filename, fs_base, fs_len, fs_type=VFS_FAT, fs_blocksize=0, status_addr=None, addr_64bit=False
+    filename,
+    fs_base,
+    fs_len,
+    fs_type=VFS_FAT,
+    fs_blocksize=0,
+    status_addr=None,
+    addr_64bit=False,
+    *,
+    fs_base2=0,
+    fs_len2=0,
 ):
-    # Check firmware is of .dfu or .dfu.gz type
-    try:
-        with open(filename, "rb") as f:
-            hdr = zlib.DecompIO(f, 16 + 15).read(6)
-    except Exception:
-        with open(filename, "rb") as f:
-            hdr = f.read(6)
-    if hdr != b"DfuSe\x01":
-        print("Firmware must be a .dfu(.gz) file.")
-        return ()
+    if fs_type != VFS_RAW:
+        # Check firmware is of .dfu or .dfu.gz type
+        try:
+            with open(filename, "rb") as f:
+                hdr = deflate.DeflateIO(f, deflate.GZIP).read(6)
+        except Exception:
+            with open(filename, "rb") as f:
+                hdr = f.read(6)
+        if hdr != b"DfuSe\x01":
+            print("Firmware must be a .dfu(.gz) file.")
+            return ()
 
     if fs_type in (VFS_LFS1, VFS_LFS2) and not fs_blocksize:
         raise Exception("littlefs requires fs_blocksize parameter")
 
     mount_point = 1
-    mount_encoding = "<BBQQL" if addr_64bit else "<BBLLL"
-    elems = _create_element(
-        _ELEM_TYPE_MOUNT,
-        struct.pack(mount_encoding, mount_point, fs_type, fs_base, fs_len, fs_blocksize),
-    )
+    if fs_type == VFS_RAW:
+        mount_encoding = "<BBQQQQ" if addr_64bit else "<BBLLLL"
+        elems = _create_element(
+            _ELEM_TYPE_MOUNT,
+            struct.pack(mount_encoding, mount_point, fs_type, fs_base, fs_len, fs_base2, fs_len2),
+        )
+    else:
+        mount_encoding = "<BBQQL" if addr_64bit else "<BBLLL"
+        elems = _create_element(
+            _ELEM_TYPE_MOUNT,
+            struct.pack(mount_encoding, mount_point, fs_type, fs_base, fs_len, fs_blocksize),
+        )
     elems += _create_element(
         _ELEM_TYPE_FSLOAD, struct.pack("<B", mount_point) + bytes(filename, "ascii")
     )

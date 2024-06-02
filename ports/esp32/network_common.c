@@ -41,6 +41,7 @@
 #include "esp_log.h"
 #include "esp_netif.h"
 #include "esp_wifi.h"
+#include "lwip/sockets.h"
 // #include "lwip/dns.h"
 
 NORETURN void esp_exceptions_helper(esp_err_t e) {
@@ -80,7 +81,7 @@ NORETURN void esp_exceptions_helper(esp_err_t e) {
     }
 }
 
-STATIC mp_obj_t esp_initialize() {
+static mp_obj_t esp_initialize() {
     static int initialized = 0;
     if (!initialized) {
         esp_exceptions(esp_netif_init());
@@ -90,7 +91,7 @@ STATIC mp_obj_t esp_initialize() {
 }
 MP_DEFINE_CONST_FUN_OBJ_0(esp_network_initialize_obj, esp_initialize);
 
-STATIC mp_obj_t esp_ifconfig(size_t n_args, const mp_obj_t *args) {
+static mp_obj_t esp_ifconfig(size_t n_args, const mp_obj_t *args) {
     base_if_obj_t *self = MP_OBJ_TO_PTR(args[0]);
     esp_netif_ip_info_t info;
     esp_netif_dns_info_t dns_info;
@@ -153,9 +154,24 @@ STATIC mp_obj_t esp_ifconfig(size_t n_args, const mp_obj_t *args) {
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(esp_network_ifconfig_obj, 1, 2, esp_ifconfig);
 
-STATIC mp_obj_t esp_phy_mode(size_t n_args, const mp_obj_t *args) {
+mp_obj_t esp_ifname(esp_netif_t *netif) {
+    char ifname[NETIF_NAMESIZE + 1] = {0};
+    mp_obj_t ret = mp_const_none;
+    if (esp_netif_get_netif_impl_name(netif, ifname) == ESP_OK && ifname[0] != 0) {
+        ret = mp_obj_new_str((char *)ifname, strlen(ifname));
+    }
+    return ret;
+}
+
+static mp_obj_t esp_phy_mode(size_t n_args, const mp_obj_t *args) {
     return mp_const_none;
 }
 MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(esp_network_phy_mode_obj, 0, 1, esp_phy_mode);
 
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 2, 0)
+_Static_assert(WIFI_AUTH_MAX == 13, "Synchronize WIFI_AUTH_XXX constants with the ESP-IDF. Look at esp-idf/components/esp_wifi/include/esp_wifi_types.h");
+#elif ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 5) && ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 1, 0) || ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 1, 2)
+_Static_assert(WIFI_AUTH_MAX == 11, "Synchronize WIFI_AUTH_XXX constants with the ESP-IDF. Look at esp-idf/components/esp_wifi/include/esp_wifi_types.h");
+#else
 _Static_assert(WIFI_AUTH_MAX == 10, "Synchronize WIFI_AUTH_XXX constants with the ESP-IDF. Look at esp-idf/components/esp_wifi/include/esp_wifi_types.h");
+#endif

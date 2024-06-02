@@ -40,6 +40,7 @@
 #include "lib/littlefs/lfs1_util.h"
 #include "lib/littlefs/lfs2.h"
 #include "lib/littlefs/lfs2_util.h"
+#include "extmod/modmachine.h"
 #include "extmod/modnetwork.h"
 #include "extmod/vfs.h"
 #include "extmod/vfs_fat.h"
@@ -86,17 +87,18 @@
 #include "servo.h"
 #include "dac.h"
 #include "can.h"
+#include "subghz.h"
 
 #if MICROPY_PY_THREAD
-STATIC pyb_thread_t pyb_thread_main;
+static pyb_thread_t pyb_thread_main;
 #endif
 
 #if defined(MICROPY_HW_UART_REPL)
 #ifndef MICROPY_HW_UART_REPL_RXBUF
 #define MICROPY_HW_UART_REPL_RXBUF (260)
 #endif
-STATIC pyb_uart_obj_t pyb_uart_repl_obj;
-STATIC uint8_t pyb_uart_repl_rxbuf[MICROPY_HW_UART_REPL_RXBUF];
+static machine_uart_obj_t pyb_uart_repl_obj;
+static uint8_t pyb_uart_repl_rxbuf[MICROPY_HW_UART_REPL_RXBUF];
 #endif
 
 void nlr_jump_fail(void *val) {
@@ -117,7 +119,7 @@ void MP_WEAK __assert_func(const char *file, int line, const char *func, const c
 }
 #endif
 
-STATIC mp_obj_t pyb_main(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
+static mp_obj_t pyb_main(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     static const mp_arg_t allowed_args[] = {
         { MP_QSTR_opt, MP_ARG_INT, {.u_int = 0} }
     };
@@ -138,7 +140,7 @@ MP_DEFINE_CONST_FUN_OBJ_KW(pyb_main_obj, 1, pyb_main);
 
 #if MICROPY_HW_FLASH_MOUNT_AT_BOOT
 // avoid inlining to avoid stack usage within main()
-MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
+MP_NOINLINE static bool init_flash_fs(uint reset_mode) {
     if (reset_mode == BOARDCTRL_RESET_MODE_FACTORY_FILESYSTEM) {
         // Asked by user to reset filesystem
         factory_reset_create_filesystem();
@@ -213,7 +215,7 @@ MP_NOINLINE STATIC bool init_flash_fs(uint reset_mode) {
 #endif
 
 #if MICROPY_HW_SDCARD_MOUNT_AT_BOOT
-STATIC bool init_sdcard_fs(void) {
+static bool init_sdcard_fs(void) {
     bool first_part = true;
     for (int part_num = 1; part_num <= 5; ++part_num) {
         // create vfs object
@@ -403,6 +405,9 @@ void stm32_main(uint32_t reset_mode) {
     #if defined(STM32WB)
     rfcore_init();
     #endif
+    #if defined(STM32WL)
+    subghz_init();
+    #endif
     #if MICROPY_HW_SDRAM_SIZE
     sdram_init();
     bool sdram_valid = true;
@@ -419,7 +424,9 @@ void stm32_main(uint32_t reset_mode) {
     #if MICROPY_HW_HAS_SWITCH
     switch_init0();
     #endif
+    #if MICROPY_PY_MACHINE
     machine_init();
+    #endif
     #if MICROPY_HW_ENABLE_RTC
     rtc_init_start(false);
     #endif
@@ -427,7 +434,7 @@ void stm32_main(uint32_t reset_mode) {
 
     #if defined(MICROPY_HW_UART_REPL)
     // Set up a UART REPL using a statically allocated object
-    pyb_uart_repl_obj.base.type = &pyb_uart_type;
+    pyb_uart_repl_obj.base.type = &machine_uart_type;
     pyb_uart_repl_obj.uart_id = MICROPY_HW_UART_REPL;
     pyb_uart_repl_obj.is_static = true;
     pyb_uart_repl_obj.timeout = 0;
@@ -435,7 +442,7 @@ void stm32_main(uint32_t reset_mode) {
     uart_init(&pyb_uart_repl_obj, MICROPY_HW_UART_REPL_BAUD, UART_WORDLENGTH_8B, UART_PARITY_NONE, UART_STOPBITS_1, 0);
     uart_set_rxbuf(&pyb_uart_repl_obj, sizeof(pyb_uart_repl_rxbuf), pyb_uart_repl_rxbuf);
     uart_attach_to_repl(&pyb_uart_repl_obj, true);
-    MP_STATE_PORT(pyb_uart_obj_all)[MICROPY_HW_UART_REPL - 1] = &pyb_uart_repl_obj;
+    MP_STATE_PORT(machine_uart_obj_all)[MICROPY_HW_UART_REPL - 1] = &pyb_uart_repl_obj;
     MP_STATE_PORT(pyb_stdio_uart) = &pyb_uart_repl_obj;
     #endif
 
@@ -470,6 +477,7 @@ void stm32_main(uint32_t reset_mode) {
         memcpy(&buf[0], "PYBD", 4);
         mp_hal_get_mac_ascii(MP_HAL_MAC_WLAN0, 8, 4, (char *)&buf[4]);
         cyw43_wifi_ap_set_ssid(&cyw43_state, 8, buf);
+        cyw43_wifi_ap_set_auth(&cyw43_state, CYW43_AUTH_WPA2_MIXED_PSK);
         cyw43_wifi_ap_set_password(&cyw43_state, 8, (const uint8_t *)"pybd0123");
     }
     #endif
@@ -524,7 +532,7 @@ soft_reset:
     pyb_usb_init0();
     #endif
 
-    #if MICROPY_HW_ENABLE_I2S
+    #if MICROPY_PY_MACHINE_I2S
     machine_i2s_init0();
     #endif
 
@@ -650,6 +658,9 @@ soft_reset_exit:
     #if MICROPY_PY_BLUETOOTH
     mp_bluetooth_deinit();
     #endif
+    #if defined(STM32WL)
+    subghz_deinit();
+    #endif
     #if MICROPY_PY_NETWORK
     mod_network_deinit();
     #endif
@@ -662,7 +673,9 @@ soft_reset_exit:
     #if MICROPY_HW_ENABLE_DAC
     dac_deinit_all();
     #endif
+    #if MICROPY_PY_MACHINE
     machine_deinit();
+    #endif
 
     #if MICROPY_PY_THREAD
     pyb_thread_deinit();

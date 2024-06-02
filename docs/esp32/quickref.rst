@@ -18,6 +18,9 @@ working with this board it may be useful to get an overview of the microcontroll
    general.rst
    tutorial/index.rst
 
+Note that there are several varieties of ESP32 -- ESP32, ESP32C3, ESP32S2, ESP32S3 --
+supported by MicroPython, with some differences in functionality between them.
+
 Installing MicroPython
 ----------------------
 
@@ -58,11 +61,17 @@ The :mod:`esp32` module::
     import esp32
 
     esp32.raw_temperature() # read the internal temperature of the MCU, in Fahrenheit
-    esp32.ULP()             # access to the Ultra-Low-Power Co-processor
+    esp32.ULP()             # access to the Ultra-Low-Power Co-processor, not on ESP32C3
 
 Note that the temperature sensor in the ESP32 will typically read higher than
 ambient due to the IC getting warm while it runs.  This effect can be minimised
 by reading the temperature sensor immediately after waking up from sleep.
+
+ESP32C3, ESP32S2, and ESP32S3 also have an internal temperature sensor available.
+It is implemented a bit differently to the ESP32 and returns the temperature in
+Celsius::
+
+    esp32.mcu_temperature() # read the internal temperature of the MCU, in Celsius
 
 Networking
 ----------
@@ -101,7 +110,7 @@ A useful function for connecting to your local WiFi network is::
         print('network config:', wlan.ifconfig())
 
 Once the network is established the :mod:`socket <socket>` module can be used
-to create and use TCP/UDP sockets as usual, and the ``urequests`` module for
+to create and use TCP/UDP sockets as usual, and the ``requests`` module for
 convenient HTTP requests.
 
 After a call to ``wlan.connect()``, the device will by default retry to connect
@@ -128,6 +137,7 @@ The keyword arguments for the constructor defining the PHY type and interface ar
 
 - mdc=pin-object    # set the mdc and mdio pins.
 - mdio=pin-object
+- reset=pin-object  # set the reset pin of the PHY device.
 - power=pin-object  # set the pin which switches the power of the PHY device.
 - phy_type=<type>   # Select the PHY device type. Supported devices are PHY_LAN8710,
   PHY_LAN8720, PH_IP101, PHY_RTL8201, PHY_DP83848 and PHY_KSZ8041
@@ -141,7 +151,7 @@ These are working configurations for LAN interfaces of popular boards::
     # Olimex ESP32-GATEWAY: power controlled by Pin(5)
     # Olimex ESP32 PoE and ESP32-PoE ISO: power controlled by Pin(12)
 
-    lan = network.LAN(mdc=machine.Pin(23), mdio=machine.Pin(18), power=machine.Pin(5), 
+    lan = network.LAN(mdc=machine.Pin(23), mdio=machine.Pin(18), power=machine.Pin(5),
                       phy_type=network.PHY_LAN8720, phy_addr=0,
                       ref_clk=machine.Pin(17), ref_clk_mode=machine.Pin.OUT)
 
@@ -149,6 +159,12 @@ These are working configurations for LAN interfaces of popular boards::
 
     lan = network.LAN(mdc=machine.Pin(23), mdio=machine.Pin(18),
                       phy_type=network.PHY_LAN8720, phy_addr=1, power=None)
+
+    # Wireless-Tag's WT32-ETH01 v1.4
+
+    lan = network.LAN(mdc=machine.Pin(23), mdio=machine.Pin(18),
+                      phy_type=network.PHY_LAN8720, phy_addr=1,
+                      power=machine.Pin(16))
 
     # Espressif ESP32-Ethernet-Kit_A_V1.2
 
@@ -323,6 +339,19 @@ have the same frequency.  On the other hand, 16 independent PWM duty cycles are
 possible at the same frequency.
 
 See more examples in the :ref:`esp32_pwm` tutorial.
+
+DAC (digital to analog conversion)
+----------------------------------
+
+On the ESP32, DAC functionality is available on pins 25, 26.
+On the ESP32S2, DAC functionality is available on pins 17, 18.
+
+Use the DAC::
+
+    from machine import DAC, Pin
+
+    dac = DAC(Pin(25))  # create an DAC object acting on a pin
+    dac.write(128)      # set a raw analog value in the range 0-255, 50% now
 
 ADC (analog to digital conversion)
 ----------------------------------
@@ -631,15 +660,15 @@ SD card
 
 See :ref:`machine.SDCard <machine.SDCard>`. ::
 
-    import machine, os
+    import machine, os, vfs
 
     # Slot 2 uses pins sck=18, cs=5, miso=19, mosi=23
     sd = machine.SDCard(slot=2)
-    os.mount(sd, '/sd')  # mount
+    vfs.mount(sd, '/sd') # mount
 
     os.listdir('/sd')    # list directory contents
 
-    os.umount('/sd')     # eject
+    vfs.umount('/sd')    # eject
 
 RMT
 ---

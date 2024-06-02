@@ -40,6 +40,11 @@ Linux, Mac and Windows hosts via https://developer.arm.com/downloads/-/arm-gnu-t
 The compiler can be changed using the `CROSS_COMPILE` variable
 when invoking `make`.
 
+* Protocol buffer compiler
+Building for the `ARDUINO_PORTENTA_C33` board will build the `esp_hosted` driver, that depends
+on the Protocol Buffer Compiler being installed. On Debian/Ubuntu, this can be installed with
+`sudo apt-get install protobuf-compiler`.
+
 * Obtain submodules
 First the submodules must be obtained using:
 
@@ -58,7 +63,7 @@ passed as the argument to `BOARD=`; for example `RA4M1_CLICKER`, `EK_RA4M1`,
 The above command should produce binary images `firmware.hex` in the
 build-EK_RA6M2/` subdirectory (or the equivalent directory for the board specified).
 
-## Supported/Unsupprted funtions
+## Supported/Unsupported functions
 Please refer to the `renesas-ra` quick reference.
 
 ## Known issues

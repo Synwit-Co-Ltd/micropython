@@ -41,6 +41,11 @@
 #define MICROPY_FLOAT_IMPL             (MICROPY_FLOAT_IMPL_DOUBLE)
 #endif
 
+// Don't use native _Float16 because it increases code size by a lot.
+#ifndef MICROPY_FLOAT_USE_NATIVE_FLT16
+#define MICROPY_FLOAT_USE_NATIVE_FLT16 (0)
+#endif
+
 // Enable arbitrary precision long-int by default.
 #ifndef MICROPY_LONGINT_IMPL
 #define MICROPY_LONGINT_IMPL           (MICROPY_LONGINT_IMPL_MPZ)
@@ -106,14 +111,9 @@
 #define MICROPY_PY_CRYPTOLIB           (1)
 #endif
 
-// Use the posix implementation of the "select" module (unless the variant
-// specifically asks for the MicroPython version).
-#ifndef MICROPY_PY_SELECT
-#define MICROPY_PY_SELECT              (0)
-#endif
-#ifndef MICROPY_PY_SELECT_POSIX
-#define MICROPY_PY_SELECT_POSIX        (!MICROPY_PY_SELECT)
-#endif
+// The "select" module is enabled by default, but disable select.select().
+#define MICROPY_PY_SELECT_POSIX_OPTIMISATIONS (1)
+#define MICROPY_PY_SELECT_SELECT       (0)
 
 // Enable the "websocket" module.
 #define MICROPY_PY_WEBSOCKET           (1)
@@ -121,3 +121,4 @@
 // Enable the "machine" module, mostly for machine.mem*.
 #define MICROPY_PY_MACHINE             (1)
 #define MICROPY_PY_MACHINE_PULSE       (1)
+#define MICROPY_PY_MACHINE_PIN_BASE    (1)

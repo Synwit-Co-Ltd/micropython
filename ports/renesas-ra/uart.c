@@ -33,6 +33,7 @@
 #include "py/stream.h"
 #include "py/mperrno.h"
 #include "py/mphal.h"
+#include "py/ringbuf.h"
 #include "shared/runtime/interrupt_char.h"
 #include "shared/runtime/mpirq.h"
 #include "uart.h"
@@ -75,6 +76,11 @@ static void uart_rx_cb(uint32_t ch, int d) {
         (*keyex_cb[ch])(d);
     }
     #endif
+
+    #if MICROPY_HW_ENABLE_UART_REPL
+    ringbuf_put(&stdin_ringbuf, d);
+    #endif
+
     // Check the flags to see if the user handler should be called
     if (self->mp_irq_trigger) {
         mp_irq_handler(self->mp_irq_obj);
@@ -500,7 +506,7 @@ void uart_tx_strn(machine_uart_obj_t *uart_obj, const char *str, uint len) {
     uart_tx_data(uart_obj, str, len, &errcode);
 }
 
-STATIC mp_uint_t uart_irq_trigger(mp_obj_t self_in, mp_uint_t new_trigger) {
+static mp_uint_t uart_irq_trigger(mp_obj_t self_in, mp_uint_t new_trigger) {
     machine_uart_obj_t *self = MP_OBJ_TO_PTR(self_in);
     uart_irq_config(self, false);
     self->mp_irq_trigger = new_trigger;
@@ -508,7 +514,7 @@ STATIC mp_uint_t uart_irq_trigger(mp_obj_t self_in, mp_uint_t new_trigger) {
     return 0;
 }
 
-STATIC mp_uint_t uart_irq_info(mp_obj_t self_in, mp_uint_t info_type) {
+static mp_uint_t uart_irq_info(mp_obj_t self_in, mp_uint_t info_type) {
     machine_uart_obj_t *self = MP_OBJ_TO_PTR(self_in);
     if (info_type == MP_IRQ_INFO_FLAGS) {
         return self->mp_irq_flags;
