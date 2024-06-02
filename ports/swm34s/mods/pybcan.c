@@ -71,7 +71,7 @@ typedef struct {
 /******************************************************************************
  DEFINE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_can_obj_t pyb_can_obj[PYB_NUM_CANS] = {
+static pyb_can_obj_t pyb_can_obj[PYB_NUM_CANS] = {
     { {&pyb_can_type}, .can_id=PYB_CAN_0, .CANx=CAN0, .IRQn=CAN0_IRQn },
     { {&pyb_can_type}, .can_id=PYB_CAN_1, .CANx=CAN1, .IRQn=CAN1_IRQn },
 };
@@ -80,7 +80,7 @@ STATIC pyb_can_obj_t pyb_can_obj[PYB_NUM_CANS] = {
 /******************************************************************************
  DEFINE PRIVATE FUNCTIONS
  ******************************************************************************/
-STATIC void set_filter(pyb_can_obj_t *self, uint32_t filter_id, mp_obj_t *filter)
+static void set_filter(pyb_can_obj_t *self, uint32_t filter_id, mp_obj_t *filter)
 {
     uint len;
     mp_obj_t *items;
@@ -121,7 +121,7 @@ STATIC void set_filter(pyb_can_obj_t *self, uint32_t filter_id, mp_obj_t *filter
 }
 
 
-STATIC mp_obj_t get_filter(pyb_can_obj_t *self, uint32_t filter_id)
+static mp_obj_t get_filter(pyb_can_obj_t *self, uint32_t filter_id)
 {
     if(self->filters[filter_id].mode == CAN_FRAME_EXT)
     {
@@ -159,7 +159,7 @@ STATIC mp_obj_t get_filter(pyb_can_obj_t *self, uint32_t filter_id)
 }
 
 
-STATIC void get_bit_time(uint baudrate, uint *bs1, uint *bs2)
+static void get_bit_time(uint baudrate, uint *bs1, uint *bs2)
 {
     switch(baudrate)
     {
@@ -188,7 +188,7 @@ STATIC void get_bit_time(uint baudrate, uint *bs1, uint *bs2)
 /******************************************************************************/
 // MicroPython bindings
 
-STATIC void can_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void can_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_can_obj_t *self = self_in;
 
@@ -204,7 +204,7 @@ STATIC void can_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t can_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t can_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_baudrate, ARG_mode, ARG_irq, ARG_callback, ARG_priority, ARG_rxd, ARG_txd };
     const mp_arg_t allowed_args[] = {
@@ -279,7 +279,7 @@ STATIC mp_obj_t can_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t can_baudrate(size_t n_args, const mp_obj_t *args)
+static mp_obj_t can_baudrate(size_t n_args, const mp_obj_t *args)
 {
     pyb_can_obj_t *self = args[0];
 
@@ -298,28 +298,28 @@ STATIC mp_obj_t can_baudrate(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(can_baudrate_obj, 1, 2, can_baudrate);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(can_baudrate_obj, 1, 2, can_baudrate);
 
 
-STATIC mp_obj_t can_any(mp_obj_t self_in)
+static mp_obj_t can_any(mp_obj_t self_in)
 {
     pyb_can_obj_t *self = self_in;
 
     return mp_obj_new_bool(CAN_RXDataAvailable(self->CANx));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(can_any_obj, can_any);
+static MP_DEFINE_CONST_FUN_OBJ_1(can_any_obj, can_any);
 
 
-STATIC mp_obj_t can_full(mp_obj_t self_in)
+static mp_obj_t can_full(mp_obj_t self_in)
 {
     pyb_can_obj_t *self = self_in;
 
     return mp_obj_new_bool(!CAN_TXBufferReady(self->CANx));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(can_full_obj, can_full);
+static MP_DEFINE_CONST_FUN_OBJ_1(can_full_obj, can_full);
 
 
-STATIC mp_obj_t can_done(mp_obj_t self_in)
+static mp_obj_t can_done(mp_obj_t self_in)
 {
     pyb_can_obj_t *self = self_in;
     
@@ -335,11 +335,11 @@ STATIC mp_obj_t can_done(mp_obj_t self_in)
         return mp_const_false;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(can_done_obj, can_done);
+static MP_DEFINE_CONST_FUN_OBJ_1(can_done_obj, can_done);
 
 
 // used when can_full() return False
-STATIC mp_obj_t can_send(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t can_send(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     enum { ARG_id, ARG_data, ARG_format, ARG_remoteReq, ARG_retry };
     const mp_arg_t allowed_args[] = {
@@ -377,11 +377,11 @@ STATIC mp_obj_t can_send(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_a
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(can_send_obj, 3, can_send);
+static MP_DEFINE_CONST_FUN_OBJ_KW(can_send_obj, 3, can_send);
 
 
 // used when can_any() return True
-STATIC mp_obj_t can_read(mp_obj_t self_in)
+static mp_obj_t can_read(mp_obj_t self_in)
 {
     pyb_can_obj_t *self = self_in;
 
@@ -401,10 +401,10 @@ STATIC mp_obj_t can_read(mp_obj_t self_in)
 
     return tuple;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(can_read_obj, can_read);
+static MP_DEFINE_CONST_FUN_OBJ_1(can_read_obj, can_read);
 
 
-STATIC mp_obj_t can_state(mp_obj_t self_in)
+static mp_obj_t can_state(mp_obj_t self_in)
 {
     pyb_can_obj_t *self = self_in;
 
@@ -423,10 +423,10 @@ STATIC mp_obj_t can_state(mp_obj_t self_in)
 
     return mp_obj_new_int(state);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(can_state_obj, can_state);
+static MP_DEFINE_CONST_FUN_OBJ_1(can_state_obj, can_state);
 
 
-STATIC mp_obj_t can_filter(size_t n_args, const mp_obj_t *args)
+static mp_obj_t can_filter(size_t n_args, const mp_obj_t *args)
 {
     pyb_can_obj_t *self = args[0];
 
@@ -447,7 +447,7 @@ STATIC mp_obj_t can_filter(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(can_filter_obj, 2, 3, can_filter);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(can_filter_obj, 2, 3, can_filter);
 
 
 void CANx_Handler(pyb_can_obj_t *self)
@@ -493,7 +493,7 @@ void CAN1_Handler(void)
 }
 
 
-STATIC const mp_rom_map_elem_t can_locals_dict_table[] = {
+static const mp_rom_map_elem_t can_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_baudrate),     MP_ROM_PTR(&can_baudrate_obj) },
     { MP_ROM_QSTR(MP_QSTR_any),          MP_ROM_PTR(&can_any_obj) },
@@ -520,7 +520,7 @@ STATIC const mp_rom_map_elem_t can_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_STAT_EPASS),   MP_ROM_INT(CAN_STAT_EPASS)  },
     { MP_ROM_QSTR(MP_QSTR_STAT_BUSOFF),  MP_ROM_INT(CAN_STAT_BUSOFF) },
 };
-STATIC MP_DEFINE_CONST_DICT(can_locals_dict, can_locals_dict_table);
+static MP_DEFINE_CONST_DICT(can_locals_dict, can_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

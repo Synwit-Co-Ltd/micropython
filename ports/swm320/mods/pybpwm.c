@@ -47,7 +47,7 @@ typedef struct _pyb_pwm_obj_t {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_pwm_obj_t pyb_pwm_obj[PYB_NUM_PWMS] = {
+static pyb_pwm_obj_t pyb_pwm_obj[PYB_NUM_PWMS] = {
     { {&pyb_pwm_type}, .pwm_id = PYB_PWM_0, .PWMx = PWM0 },
     { {&pyb_pwm_type}, .pwm_id = PYB_PWM_1, .PWMx = PWM1 },
     { {&pyb_pwm_type}, .pwm_id = PYB_PWM_2, .PWMx = PWM2 },
@@ -60,7 +60,7 @@ STATIC pyb_pwm_obj_t pyb_pwm_obj[PYB_NUM_PWMS] = {
 /******************************************************************************/
 /* MicroPython bindings                                                      */
 /******************************************************************************/
-STATIC void pwm_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void pwm_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_pwm_obj_t *self = self_in;
 
@@ -75,7 +75,7 @@ STATIC void pwm_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t pwm_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t pwm_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_period, ARG_duty, ARG_mode, ARG_deadzone, ARG_trigger, ARG_pin, ARG_pinN };
     const mp_arg_t allowed_args[] = {
@@ -234,7 +234,7 @@ STATIC mp_obj_t pwm_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
     return self;
 }
 
-STATIC mp_obj_t pwm_start(mp_obj_t self_in)
+static mp_obj_t pwm_start(mp_obj_t self_in)
 {
     pyb_pwm_obj_t *self = self_in;
 
@@ -242,10 +242,10 @@ STATIC mp_obj_t pwm_start(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pwm_start_obj, pwm_start);
+static MP_DEFINE_CONST_FUN_OBJ_1(pwm_start_obj, pwm_start);
 
 
-STATIC mp_obj_t pwm_stop(mp_obj_t self_in)
+static mp_obj_t pwm_stop(mp_obj_t self_in)
 {
     pyb_pwm_obj_t *self = self_in;
 
@@ -253,10 +253,10 @@ STATIC mp_obj_t pwm_stop(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pwm_stop_obj, pwm_stop);
+static MP_DEFINE_CONST_FUN_OBJ_1(pwm_stop_obj, pwm_stop);
 
 
-STATIC mp_obj_t pwm_period(size_t n_args, const mp_obj_t *args)
+static mp_obj_t pwm_period(size_t n_args, const mp_obj_t *args)
 {
     pyb_pwm_obj_t *self = args[0];
 
@@ -272,10 +272,10 @@ STATIC mp_obj_t pwm_period(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_period_obj, 1, 2, pwm_period);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_period_obj, 1, 2, pwm_period);
 
 
-STATIC mp_obj_t pwm_duty(size_t n_args, const mp_obj_t *args)
+static mp_obj_t pwm_duty(size_t n_args, const mp_obj_t *args)
 {
     pyb_pwm_obj_t *self = args[0];
 
@@ -297,10 +297,10 @@ STATIC mp_obj_t pwm_duty(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_duty_obj, 1, 2, pwm_duty);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_duty_obj, 1, 2, pwm_duty);
 
 
-STATIC mp_obj_t pwm_deadzone(size_t n_args, const mp_obj_t *args)
+static mp_obj_t pwm_deadzone(size_t n_args, const mp_obj_t *args)
 {
     pyb_pwm_obj_t *self = args[0];
 
@@ -316,10 +316,10 @@ STATIC mp_obj_t pwm_deadzone(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_deadzone_obj, 1, 2, pwm_deadzone);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pwm_deadzone_obj, 1, 2, pwm_deadzone);
 
 
-STATIC const mp_rom_map_elem_t pwm_locals_dict_table[] = {
+static const mp_rom_map_elem_t pwm_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_start),         MP_ROM_PTR(&pwm_start_obj) },
     { MP_ROM_QSTR(MP_QSTR_stop),          MP_ROM_PTR(&pwm_stop_obj) },
@@ -333,7 +333,7 @@ STATIC const mp_rom_map_elem_t pwm_locals_dict_table[] = {
 
     { MP_ROM_QSTR(MP_QSTR_TO_ADC),        MP_ROM_INT(PWM_TRIG_TO_ADC) },
 };
-STATIC MP_DEFINE_CONST_DICT(pwm_locals_dict, pwm_locals_dict_table);
+static MP_DEFINE_CONST_DICT(pwm_locals_dict, pwm_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

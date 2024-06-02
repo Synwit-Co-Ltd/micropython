@@ -46,7 +46,7 @@ typedef struct {
 /******************************************************************************
  DEFINE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_timer_obj_t pyb_timer_obj[PYB_NUM_TIMERS] = {
+static pyb_timer_obj_t pyb_timer_obj[PYB_NUM_TIMERS] = {
     { {&pyb_timer_type}, .timer_id = PYB_TIMER_0, .TIMRx = TIMR0, .period = 0, .IRQn = TIMR0_IRQn },
     { {&pyb_timer_type}, .timer_id = PYB_TIMER_1, .TIMRx = TIMR1, .period = 0, .IRQn = TIMR1_IRQn },
     { {&pyb_timer_type}, .timer_id = PYB_TIMER_2, .TIMRx = TIMR2, .period = 0, .IRQn = TIMR2_IRQn },
@@ -59,7 +59,7 @@ STATIC pyb_timer_obj_t pyb_timer_obj[PYB_NUM_TIMERS] = {
 /******************************************************************************/
 /* MicroPython bindings                                                      */
 
-STATIC void timer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void timer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -76,7 +76,7 @@ STATIC void timer_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind
 }
 
 
-STATIC mp_obj_t timer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t timer_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_period, ARG_mode, ARG_irq, ARG_callback,  ARG_priority, ARG_pin };
     const mp_arg_t allowed_args[] = {
@@ -168,7 +168,7 @@ STATIC mp_obj_t timer_make_new(const mp_obj_type_t *type, size_t n_args, size_t 
 }
 
 
-STATIC mp_obj_t timer_period(size_t n_args, const mp_obj_t *args)
+static mp_obj_t timer_period(size_t n_args, const mp_obj_t *args)
 {
     pyb_timer_obj_t *self = args[0];
 
@@ -191,10 +191,10 @@ STATIC mp_obj_t timer_period(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(timer_period_obj, 1, 2, timer_period);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(timer_period_obj, 1, 2, timer_period);
 
 
-STATIC mp_obj_t timer_value(mp_obj_t self_in)
+static mp_obj_t timer_value(mp_obj_t self_in)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -209,10 +209,10 @@ STATIC mp_obj_t timer_value(mp_obj_t self_in)
         return mp_obj_new_int(value);
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(timer_value_obj, timer_value);
+static MP_DEFINE_CONST_FUN_OBJ_1(timer_value_obj, timer_value);
 
 
-STATIC mp_obj_t timer_start(mp_obj_t self_in)
+static mp_obj_t timer_start(mp_obj_t self_in)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -220,10 +220,10 @@ STATIC mp_obj_t timer_start(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(timer_start_obj, timer_start);
+static MP_DEFINE_CONST_FUN_OBJ_1(timer_start_obj, timer_start);
 
 
-STATIC mp_obj_t timer_stop(mp_obj_t self_in)
+static mp_obj_t timer_stop(mp_obj_t self_in)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -231,19 +231,19 @@ STATIC mp_obj_t timer_stop(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(timer_stop_obj, timer_stop);
+static MP_DEFINE_CONST_FUN_OBJ_1(timer_stop_obj, timer_stop);
 
 
-STATIC mp_obj_t timer_irq_flags(mp_obj_t self_in)
+static mp_obj_t timer_irq_flags(mp_obj_t self_in)
 {
     pyb_timer_obj_t *self = self_in;
 
     return mp_obj_new_int(self->irq_flags);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(timer_irq_flags_obj, timer_irq_flags);
+static MP_DEFINE_CONST_FUN_OBJ_1(timer_irq_flags_obj, timer_irq_flags);
 
 
-STATIC mp_obj_t timer_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t timer_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -258,10 +258,10 @@ STATIC mp_obj_t timer_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(timer_irq_enable_obj, timer_irq_enable);
+static MP_DEFINE_CONST_FUN_OBJ_2(timer_irq_enable_obj, timer_irq_enable);
 
 
-STATIC mp_obj_t timer_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t timer_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_timer_obj_t *self = self_in;
 
@@ -276,7 +276,7 @@ STATIC mp_obj_t timer_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(timer_irq_disable_obj, timer_irq_disable);
+static MP_DEFINE_CONST_FUN_OBJ_2(timer_irq_disable_obj, timer_irq_disable);
 
 
 void TIMR_Handler(pyb_timer_obj_t *self)
@@ -342,7 +342,7 @@ void TIMR5_Handler(void)
 }
 
 
-STATIC const mp_rom_map_elem_t timer_locals_dict_table[] = {
+static const mp_rom_map_elem_t timer_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_period),              MP_ROM_PTR(&timer_period_obj) },
     { MP_ROM_QSTR(MP_QSTR_value),               MP_ROM_PTR(&timer_value_obj) },
@@ -360,7 +360,7 @@ STATIC const mp_rom_map_elem_t timer_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_IRQ_TIMEOUT),         MP_ROM_INT(TIMR_IRQ_TIMEOUT) },
 //  { MP_ROM_QSTR(MP_QSTR_IRQ_CAPTURE),         MP_ROM_INT(TIMR_IRQ_CAPTURE) },
 };
-STATIC MP_DEFINE_CONST_DICT(timer_locals_dict, timer_locals_dict_table);
+static MP_DEFINE_CONST_DICT(timer_locals_dict, timer_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

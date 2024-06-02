@@ -32,7 +32,7 @@ typedef struct _pyb_i2c_obj_t {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_i2c_obj_t pyb_i2c_obj[PYB_NUM_I2CS] = {
+static pyb_i2c_obj_t pyb_i2c_obj[PYB_NUM_I2CS] = {
     { {&pyb_i2c_type}, .i2c_id = PYB_I2C_0, .I2Cx = I2C0 },
     { {&pyb_i2c_type}, .i2c_id = PYB_I2C_1, .I2Cx = I2C1 },
 };
@@ -41,7 +41,7 @@ STATIC pyb_i2c_obj_t pyb_i2c_obj[PYB_NUM_I2CS] = {
 /******************************************************************************
  DEFINE PRIVATE FUNCTIONS
  ******************************************************************************/
-STATIC bool i2c_is_online(pyb_i2c_obj_t *self, byte addr)
+static bool i2c_is_online(pyb_i2c_obj_t *self, byte addr)
 {
     bool ack = I2C_Start(self->I2Cx, (addr << 1) | 0, 1);
 
@@ -53,7 +53,7 @@ STATIC bool i2c_is_online(pyb_i2c_obj_t *self, byte addr)
 }
 
 
-STATIC void _i2c_readfrom_into(pyb_i2c_obj_t *self, uint addr, vstr_t *vstr)
+static void _i2c_readfrom_into(pyb_i2c_obj_t *self, uint addr, vstr_t *vstr)
 {
     bool ack = I2C_Start(self->I2Cx, (addr << 1) | 1, 1);
     if(!ack)
@@ -73,7 +73,7 @@ STATIC void _i2c_readfrom_into(pyb_i2c_obj_t *self, uint addr, vstr_t *vstr)
 }
 
 
-STATIC void _i2c_mem_readfrom_into(pyb_i2c_obj_t *self, uint addr, uint memaddr, uint memaddr_len, vstr_t *vstr)
+static void _i2c_mem_readfrom_into(pyb_i2c_obj_t *self, uint addr, uint memaddr, uint memaddr_len, vstr_t *vstr)
 {
     bool ack = I2C_Start(self->I2Cx, (addr << 1) | 0, 1);
     if(!ack)
@@ -113,7 +113,7 @@ STATIC void _i2c_mem_readfrom_into(pyb_i2c_obj_t *self, uint addr, uint memaddr,
 /******************************************************************************/
 /* MicroPython bindings                                                      */
 /******************************************************************************/
-STATIC void i2c_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void i2c_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_i2c_obj_t *self = self_in;
 
@@ -121,10 +121,10 @@ STATIC void i2c_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t i2c_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t i2c_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_baudrate, ARG_scl, ARG_sda };
-    STATIC const mp_arg_t allowed_args[] = {
+    static const mp_arg_t allowed_args[] = {
         { MP_QSTR_id,       MP_ARG_REQUIRED | MP_ARG_INT,  {.u_int = 0} },
         { MP_QSTR_baudrate, MP_ARG_REQUIRED | MP_ARG_INT,  {.u_int = 10000} },
         { MP_QSTR_scl,      MP_ARG_KW_ONLY  | MP_ARG_OBJ,  {.u_obj = mp_const_none} },
@@ -181,7 +181,7 @@ STATIC mp_obj_t i2c_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t i2c_baudrate(size_t n_args, const mp_obj_t *args)
+static mp_obj_t i2c_baudrate(size_t n_args, const mp_obj_t *args)
 {
     pyb_i2c_obj_t *self = args[0];
 
@@ -200,10 +200,10 @@ STATIC mp_obj_t i2c_baudrate(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(i2c_baudrate_obj, 1, 2, i2c_baudrate);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(i2c_baudrate_obj, 1, 2, i2c_baudrate);
 
 
-STATIC mp_obj_t i2c_scan(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t i2c_scan(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     const mp_arg_t allowed_args[] = {
         { MP_QSTR_start, MP_ARG_KW_ONLY | MP_ARG_INT, {.u_int = 0x10} },
@@ -229,10 +229,10 @@ STATIC mp_obj_t i2c_scan(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_a
     }
     return list;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(i2c_scan_obj, 1, i2c_scan);
+static MP_DEFINE_CONST_FUN_OBJ_KW(i2c_scan_obj, 1, i2c_scan);
 
 
-STATIC mp_obj_t i2c_writeto(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t data)
+static mp_obj_t i2c_writeto(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t data)
 {
     pyb_i2c_obj_t *self = self_in;
 
@@ -264,10 +264,10 @@ STATIC mp_obj_t i2c_writeto(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t data)
 
     return mp_obj_new_int(bufinfo.len);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(i2c_writeto_obj, i2c_writeto);
+static MP_DEFINE_CONST_FUN_OBJ_3(i2c_writeto_obj, i2c_writeto);
 
 
-STATIC mp_obj_t i2c_readfrom(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t len)
+static mp_obj_t i2c_readfrom(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t len)
 {
     pyb_i2c_obj_t *self = self_in;
 
@@ -280,10 +280,10 @@ STATIC mp_obj_t i2c_readfrom(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t len)
 
     return mp_obj_new_bytes_from_vstr(&vstr);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(i2c_readfrom_obj, i2c_readfrom);
+static MP_DEFINE_CONST_FUN_OBJ_3(i2c_readfrom_obj, i2c_readfrom);
 
 
-STATIC mp_obj_t i2c_readfrom_into(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t buf)
+static mp_obj_t i2c_readfrom_into(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t buf)
 {
     pyb_i2c_obj_t *self = self_in;
 
@@ -296,10 +296,10 @@ STATIC mp_obj_t i2c_readfrom_into(mp_obj_t self_in, mp_obj_t addr_in, mp_obj_t b
 
     return mp_obj_new_int(vstr.len);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(i2c_readfrom_into_obj, i2c_readfrom_into);
+static MP_DEFINE_CONST_FUN_OBJ_3(i2c_readfrom_into_obj, i2c_readfrom_into);
 
 
-STATIC mp_obj_t i2c_mem_writeto(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t i2c_mem_writeto(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     const mp_arg_t allowed_args[] = {
         { MP_QSTR_addr,        MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 0} },
@@ -358,10 +358,10 @@ STATIC mp_obj_t i2c_mem_writeto(size_t n_args, const mp_obj_t *pos_args, mp_map_
 
     return mp_obj_new_int(bufinfo.len);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_writeto_obj, 4, i2c_mem_writeto);
+static MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_writeto_obj, 4, i2c_mem_writeto);
 
 
-STATIC mp_obj_t i2c_mem_readfrom(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t i2c_mem_readfrom(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     const mp_arg_t allowed_args[] = {
         { MP_QSTR_addr,        MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 0} },
@@ -390,10 +390,10 @@ STATIC mp_obj_t i2c_mem_readfrom(size_t n_args, const mp_obj_t *pos_args, mp_map
 
     return mp_obj_new_bytes_from_vstr(&vstr);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_readfrom_obj, 4, i2c_mem_readfrom);
+static MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_readfrom_obj, 4, i2c_mem_readfrom);
 
 
-STATIC mp_obj_t i2c_mem_readfrom_into(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t i2c_mem_readfrom_into(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     const mp_arg_t allowed_args[] = {
         { MP_QSTR_addr,        MP_ARG_REQUIRED | MP_ARG_INT, {.u_int = 0} },
@@ -422,10 +422,10 @@ STATIC mp_obj_t i2c_mem_readfrom_into(size_t n_args, const mp_obj_t *pos_args, m
 
     return mp_obj_new_int(vstr.len);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_readfrom_into_obj, 4, i2c_mem_readfrom_into);
+static MP_DEFINE_CONST_FUN_OBJ_KW(i2c_mem_readfrom_into_obj, 4, i2c_mem_readfrom_into);
 
 
-STATIC const mp_rom_map_elem_t i2c_locals_dict_table[] = {
+static const mp_rom_map_elem_t i2c_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_baudrate),           MP_ROM_PTR(&i2c_baudrate_obj) },
     { MP_ROM_QSTR(MP_QSTR_scan),               MP_ROM_PTR(&i2c_scan_obj) },
@@ -436,7 +436,7 @@ STATIC const mp_rom_map_elem_t i2c_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_mem_readfrom),       MP_ROM_PTR(&i2c_mem_readfrom_obj) },
     { MP_ROM_QSTR(MP_QSTR_mem_readfrom_into),  MP_ROM_PTR(&i2c_mem_readfrom_into_obj) },
 };
-STATIC MP_DEFINE_CONST_DICT(i2c_locals_dict, i2c_locals_dict_table);
+static MP_DEFINE_CONST_DICT(i2c_locals_dict, i2c_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

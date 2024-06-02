@@ -37,7 +37,7 @@ typedef struct _pyb_spi_obj_t {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_spi_obj_t pyb_spi_obj[PYB_NUM_SPIS] = {
+static pyb_spi_obj_t pyb_spi_obj[PYB_NUM_SPIS] = {
     { {&pyb_spi_type}, .spi_id = PYB_SPI_0, .SPIx = SPI0 },
     { {&pyb_spi_type}, .spi_id = PYB_SPI_1, .SPIx = SPI1 },
 };
@@ -46,7 +46,7 @@ STATIC pyb_spi_obj_t pyb_spi_obj[PYB_NUM_SPIS] = {
 /******************************************************************************
  DEFINE PRIVATE FUNCTIONS
  ******************************************************************************/
-STATIC uint spi_transfer(pyb_spi_obj_t *self, uint data)
+static uint spi_transfer(pyb_spi_obj_t *self, uint data)
 {
     SPI_WriteWithWait(self->SPIx, data);
 
@@ -57,7 +57,7 @@ STATIC uint spi_transfer(pyb_spi_obj_t *self, uint data)
 /******************************************************************************/
 /* MicroPython bindings                                                      */
 /******************************************************************************/
-STATIC void spi_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void spi_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -66,7 +66,7 @@ STATIC void spi_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t spi_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t spi_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_baudrate, ARG_polarity, ARG_phase, ARG_slave, ARG_bits, ARG_mosi, ARG_miso, ARG_sck, ARG_ss };
     const mp_arg_t allowed_args[] = {
@@ -174,7 +174,7 @@ not_salve:
 }
 
 
-STATIC mp_obj_t spi_baudrate(size_t n_args, const mp_obj_t *args)
+static mp_obj_t spi_baudrate(size_t n_args, const mp_obj_t *args)
 {
     pyb_spi_obj_t *self = args[0];
 
@@ -202,10 +202,10 @@ STATIC mp_obj_t spi_baudrate(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_baudrate_obj, 1, 2, spi_baudrate);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_baudrate_obj, 1, 2, spi_baudrate);
 
 
-STATIC mp_obj_t spi_polarity(size_t n_args, const mp_obj_t *args)
+static mp_obj_t spi_polarity(size_t n_args, const mp_obj_t *args)
 {
     pyb_spi_obj_t *self = args[0];
 
@@ -223,10 +223,10 @@ STATIC mp_obj_t spi_polarity(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_polarity_obj, 1, 2, spi_polarity);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_polarity_obj, 1, 2, spi_polarity);
 
 
-STATIC mp_obj_t spi_phase(size_t n_args, const mp_obj_t *args)
+static mp_obj_t spi_phase(size_t n_args, const mp_obj_t *args)
 {
     pyb_spi_obj_t *self = args[0];
 
@@ -244,10 +244,10 @@ STATIC mp_obj_t spi_phase(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_phase_obj, 1, 2, spi_phase);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_phase_obj, 1, 2, spi_phase);
 
 
-STATIC mp_obj_t spi_bits(size_t n_args, const mp_obj_t *args)
+static mp_obj_t spi_bits(size_t n_args, const mp_obj_t *args)
 {
     pyb_spi_obj_t *self = args[0];
 
@@ -265,10 +265,10 @@ STATIC mp_obj_t spi_bits(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_bits_obj, 1, 2, spi_bits);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(spi_bits_obj, 1, 2, spi_bits);
 
 
-STATIC mp_obj_t spi_write(mp_obj_t self_in, mp_obj_t data)
+static mp_obj_t spi_write(mp_obj_t self_in, mp_obj_t data)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -293,10 +293,10 @@ STATIC mp_obj_t spi_write(mp_obj_t self_in, mp_obj_t data)
         return mp_obj_new_int(bufinfo.len);
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(spi_write_obj, spi_write);
+static MP_DEFINE_CONST_FUN_OBJ_2(spi_write_obj, spi_write);
 
 
-STATIC mp_obj_t spi_read(mp_obj_t self_in, mp_obj_t len_in)
+static mp_obj_t spi_read(mp_obj_t self_in, mp_obj_t len_in)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -328,10 +328,10 @@ STATIC mp_obj_t spi_read(mp_obj_t self_in, mp_obj_t len_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(spi_read_obj, spi_read);
+static MP_DEFINE_CONST_FUN_OBJ_2(spi_read_obj, spi_read);
 
 
-STATIC mp_obj_t spi_readinto(mp_obj_t self_in, mp_obj_t buf)
+static mp_obj_t spi_readinto(mp_obj_t self_in, mp_obj_t buf)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -347,10 +347,10 @@ STATIC mp_obj_t spi_readinto(mp_obj_t self_in, mp_obj_t buf)
 
     return mp_obj_new_int(bufinfo.len);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(spi_readinto_obj, spi_readinto);
+static MP_DEFINE_CONST_FUN_OBJ_2(spi_readinto_obj, spi_readinto);
 
 
-STATIC mp_obj_t spi_write_read(mp_obj_t self_in, mp_obj_t data)
+static mp_obj_t spi_write_read(mp_obj_t self_in, mp_obj_t data)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -382,10 +382,10 @@ STATIC mp_obj_t spi_write_read(mp_obj_t self_in, mp_obj_t data)
         return mp_obj_new_memoryview(self->bits <= 8 ? 'B' : 'H', bufinfo.len, items);
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(spi_write_read_obj, spi_write_read);
+static MP_DEFINE_CONST_FUN_OBJ_2(spi_write_read_obj, spi_write_read);
 
 
-STATIC mp_obj_t spi_write_readinto(mp_obj_t self_in, mp_obj_t wbuf, mp_obj_t rbuf)
+static mp_obj_t spi_write_readinto(mp_obj_t self_in, mp_obj_t wbuf, mp_obj_t rbuf)
 {
     pyb_spi_obj_t *self = self_in;
 
@@ -410,10 +410,10 @@ STATIC mp_obj_t spi_write_readinto(mp_obj_t self_in, mp_obj_t wbuf, mp_obj_t rbu
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(spi_write_readinto_obj, spi_write_readinto);
+static MP_DEFINE_CONST_FUN_OBJ_3(spi_write_readinto_obj, spi_write_readinto);
 
 
-STATIC const mp_rom_map_elem_t spi_locals_dict_table[] = {
+static const mp_rom_map_elem_t spi_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_baudrate),            MP_ROM_PTR(&spi_baudrate_obj) },
     { MP_ROM_QSTR(MP_QSTR_polarity),            MP_ROM_PTR(&spi_polarity_obj) },
@@ -431,7 +431,7 @@ STATIC const mp_rom_map_elem_t spi_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_EDGE_FIRST),          MP_ROM_INT(SPI_FIRST_EDGE) },
     { MP_ROM_QSTR(MP_QSTR_EDGE_SECOND),         MP_ROM_INT(SPI_SECOND_EDGE) },
 };
-STATIC MP_DEFINE_CONST_DICT(spi_locals_dict, spi_locals_dict_table);
+static MP_DEFINE_CONST_DICT(spi_locals_dict, spi_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

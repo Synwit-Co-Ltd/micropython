@@ -46,7 +46,7 @@ class Pins:
         for pin in self.pins.values():
             pin.print()
         print('')
-        print('STATIC const mp_rom_map_elem_t pins_locals_dict_table[] = {')
+        print('static const mp_rom_map_elem_t pins_locals_dict_table[] = {')
         for pin in self.pins.values():
             print('    {{ MP_ROM_QSTR(MP_QSTR_{:5s}),  MP_ROM_PTR(&pin_{:5s}) }},'.format(pin.name, pin.name))
         print('};')

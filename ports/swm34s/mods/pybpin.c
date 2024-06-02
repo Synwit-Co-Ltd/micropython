@@ -144,7 +144,7 @@ void pin_config_by_func(mp_obj_t obj, const char *format, uint id)
 /******************************************************************************/
 // MicroPython bindings
 
-STATIC void pin_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void pin_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pin_obj_t *self = self_in;
 
@@ -165,7 +165,7 @@ STATIC void pin_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
     }
 }
 
-STATIC mp_obj_t pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_dir, ARG_af, ARG_pull, ARG_irq, ARG_callback, ARG_priority };
     const mp_arg_t allowed_args[] = {
@@ -211,7 +211,7 @@ STATIC mp_obj_t pin_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t pin_value(size_t n_args, const mp_obj_t *args)
+static mp_obj_t pin_value(size_t n_args, const mp_obj_t *args)
 {
     pin_obj_t *self = args[0];
     if(n_args == 1)     // get
@@ -232,10 +232,10 @@ STATIC mp_obj_t pin_value(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pin_value_obj, 1, 2, pin_value);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pin_value_obj, 1, 2, pin_value);
 
 
-STATIC mp_obj_t pin_high(mp_obj_t self_in)
+static mp_obj_t pin_high(mp_obj_t self_in)
 {
     pin_obj_t *self = self_in;
 
@@ -243,10 +243,10 @@ STATIC mp_obj_t pin_high(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pin_high_obj, pin_high);
+static MP_DEFINE_CONST_FUN_OBJ_1(pin_high_obj, pin_high);
 
 
-STATIC mp_obj_t pin_low(mp_obj_t self_in)
+static mp_obj_t pin_low(mp_obj_t self_in)
 {
     pin_obj_t *self = self_in;
 
@@ -254,10 +254,10 @@ STATIC mp_obj_t pin_low(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pin_low_obj, pin_low);
+static MP_DEFINE_CONST_FUN_OBJ_1(pin_low_obj, pin_low);
 
 
-STATIC mp_obj_t pin_toggle(mp_obj_t self_in)
+static mp_obj_t pin_toggle(mp_obj_t self_in)
 {
     pin_obj_t *self = self_in;
 
@@ -265,10 +265,10 @@ STATIC mp_obj_t pin_toggle(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pin_toggle_obj, pin_toggle);
+static MP_DEFINE_CONST_FUN_OBJ_1(pin_toggle_obj, pin_toggle);
 
 
-STATIC mp_obj_t pin_irq_enable(mp_obj_t self_in)
+static mp_obj_t pin_irq_enable(mp_obj_t self_in)
 {
     pin_obj_t *self = self_in;
 
@@ -276,10 +276,10 @@ STATIC mp_obj_t pin_irq_enable(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pin_irq_enable_obj, pin_irq_enable);
+static MP_DEFINE_CONST_FUN_OBJ_1(pin_irq_enable_obj, pin_irq_enable);
 
 
-STATIC mp_obj_t pin_irq_disable(mp_obj_t self_in)
+static mp_obj_t pin_irq_disable(mp_obj_t self_in)
 {
     pin_obj_t *self = self_in;
 
@@ -287,10 +287,10 @@ STATIC mp_obj_t pin_irq_disable(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pin_irq_disable_obj, pin_irq_disable);
+static MP_DEFINE_CONST_FUN_OBJ_1(pin_irq_disable_obj, pin_irq_disable);
 
 
-STATIC void GPIOX_Handler(GPIO_TypeDef *GPIOx, uint n)
+static void GPIOX_Handler(GPIO_TypeDef *GPIOx, uint n)
 {
     for(uint i = 0; i < n; i++)
     {
@@ -362,7 +362,7 @@ void GPION_Handler(void)
 }
 
 
-STATIC const mp_rom_map_elem_t pin_locals_dict_table[] = {
+static const mp_rom_map_elem_t pin_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_value),                   MP_ROM_PTR(&pin_value_obj) },
     { MP_ROM_QSTR(MP_QSTR_high),                    MP_ROM_PTR(&pin_high_obj) },
@@ -386,7 +386,7 @@ STATIC const mp_rom_map_elem_t pin_locals_dict_table[] = {
 
 #include "genhdr/pins_af_const.h"
 };
-STATIC MP_DEFINE_CONST_DICT(pin_locals_dict, pin_locals_dict_table);
+static MP_DEFINE_CONST_DICT(pin_locals_dict, pin_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

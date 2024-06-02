@@ -39,7 +39,7 @@ typedef struct {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
+static pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
     { {&pyb_adc_type}, .adc_id = PYB_ADC_0, .ADCx = ADC0, .chns_enabled = 0 },
     { {&pyb_adc_type}, .adc_id = PYB_ADC_1, .ADCx = ADC1, .chns_enabled = 0 },
 };
@@ -48,7 +48,7 @@ STATIC pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
 /******************************************************************************
  DEFINE PRIVATE FUNCTIONS
  ******************************************************************************/
-STATIC void adc_pin_config(pyb_adc_obj_t *self, uint32_t chns)
+static void adc_pin_config(pyb_adc_obj_t *self, uint32_t chns)
 {
     if(self->ADCx == ADC0)
     {
@@ -125,7 +125,7 @@ STATIC void adc_pin_config(pyb_adc_obj_t *self, uint32_t chns)
 }
 
 
-STATIC void adc_channel_config(pyb_adc_obj_t *self, mp_obj_t chns_in)
+static void adc_channel_config(pyb_adc_obj_t *self, mp_obj_t chns_in)
 {
     uint len;
     mp_obj_t *items;
@@ -156,7 +156,7 @@ STATIC void adc_channel_config(pyb_adc_obj_t *self, mp_obj_t chns_in)
 /******************************************************************************/
 /* MicroPython bindings : adc object                                          */
 
-STATIC void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -175,7 +175,7 @@ STATIC void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_chns, ARG_samprate, ARG_trigger };
     const mp_arg_t allowed_args[] = {
@@ -235,7 +235,7 @@ STATIC mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t adc_samprate(size_t n_args, const mp_obj_t *args)
+static mp_obj_t adc_samprate(size_t n_args, const mp_obj_t *args)
 {
     pyb_adc_obj_t *self = args[0];
 
@@ -260,10 +260,10 @@ STATIC mp_obj_t adc_samprate(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_samprate_obj, 1, 2, adc_samprate);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_samprate_obj, 1, 2, adc_samprate);
 
 
-STATIC mp_obj_t adc_channel(size_t n_args, const mp_obj_t *args)
+static mp_obj_t adc_channel(size_t n_args, const mp_obj_t *args)
 {
     pyb_adc_obj_t *self = args[0];
 
@@ -291,10 +291,10 @@ STATIC mp_obj_t adc_channel(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_channel_obj, 1, 2, adc_channel);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_channel_obj, 1, 2, adc_channel);
 
 
-STATIC mp_obj_t adc_trigger(size_t n_args, const mp_obj_t *args)
+static mp_obj_t adc_trigger(size_t n_args, const mp_obj_t *args)
 {
     pyb_adc_obj_t *self = args[0];
 
@@ -312,10 +312,10 @@ STATIC mp_obj_t adc_trigger(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_trigger_obj, 1, 2, adc_trigger);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(adc_trigger_obj, 1, 2, adc_trigger);
 
 
-STATIC mp_obj_t adc_start(mp_obj_t self_in)
+static mp_obj_t adc_start(mp_obj_t self_in)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -323,19 +323,19 @@ STATIC mp_obj_t adc_start(mp_obj_t self_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(adc_start_obj, adc_start);
+static MP_DEFINE_CONST_FUN_OBJ_1(adc_start_obj, adc_start);
 
 
-STATIC mp_obj_t adc_busy(mp_obj_t self_in)
+static mp_obj_t adc_busy(mp_obj_t self_in)
 {
     pyb_adc_obj_t *self = self_in;
 
     return mp_obj_new_bool(self->ADCx->START & ADC_START_BUSY_Msk);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(adc_busy_obj, adc_busy);
+static MP_DEFINE_CONST_FUN_OBJ_1(adc_busy_obj, adc_busy);
 
 
-STATIC mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t chn_in)
+static mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t chn_in)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -345,10 +345,10 @@ STATIC mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t chn_in)
 
     return mp_obj_new_bool(!fifo_empty);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(adc_any_obj, adc_any);
+static MP_DEFINE_CONST_FUN_OBJ_2(adc_any_obj, adc_any);
 
 
-STATIC mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t chn_in)
+static mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t chn_in)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -356,10 +356,10 @@ STATIC mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t chn_in)
 
     return mp_obj_new_int(self->ADCx->CH[chn].DATA);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(adc_read_obj, adc_read);
+static MP_DEFINE_CONST_FUN_OBJ_2(adc_read_obj, adc_read);
 
 
-STATIC const mp_rom_map_elem_t adc_locals_dict_table[] = {
+static const mp_rom_map_elem_t adc_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_samprate),  MP_ROM_PTR(&adc_samprate_obj) },
     { MP_ROM_QSTR(MP_QSTR_channel),   MP_ROM_PTR(&adc_channel_obj) },
     { MP_ROM_QSTR(MP_QSTR_trigger),   MP_ROM_PTR(&adc_trigger_obj) },
@@ -372,7 +372,7 @@ STATIC const mp_rom_map_elem_t adc_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_TRIG_SW),   MP_ROM_INT(ADC_TRIGSRC_SW) },
     { MP_ROM_QSTR(MP_QSTR_TRIG_PWM),  MP_ROM_INT(ADC_TRIGSRC_PWM) },
 };
-STATIC MP_DEFINE_CONST_DICT(adc_locals_dict, adc_locals_dict_table);
+static MP_DEFINE_CONST_DICT(adc_locals_dict, adc_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

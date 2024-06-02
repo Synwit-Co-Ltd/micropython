@@ -39,7 +39,7 @@ typedef struct {
 /******************************************************************************
  DEFINE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_pulse_obj_t pyb_pulse_obj[PYB_NUM_PULSES] = {
+static pyb_pulse_obj_t pyb_pulse_obj[PYB_NUM_PULSES] = {
     { {&pyb_pulse_type}, .pulse_id = PYB_PULSE_0, .TIMRx = TIMRG, .IRQn = PULSE_IRQn },
 };
 
@@ -47,7 +47,7 @@ STATIC pyb_pulse_obj_t pyb_pulse_obj[PYB_NUM_PULSES] = {
 /******************************************************************************/
 /* MicroPython bindings                                                      */
 
-STATIC void pulse_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void pulse_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_pulse_obj_t *self = self_in;
 
@@ -55,7 +55,7 @@ STATIC void pulse_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind
 }
 
 
-STATIC mp_obj_t pulse_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t pulse_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_pulse, ARG_irq, ARG_callback,  ARG_priority, ARG_pin };
     const mp_arg_t allowed_args[] = {
@@ -113,7 +113,7 @@ STATIC mp_obj_t pulse_make_new(const mp_obj_type_t *type, size_t n_args, size_t 
 }
 
 
-STATIC mp_obj_t pulse_start(size_t n_args, const mp_obj_t *args)
+static mp_obj_t pulse_start(size_t n_args, const mp_obj_t *args)
 {
     pyb_pulse_obj_t *self = args[0];
 
@@ -129,37 +129,37 @@ STATIC mp_obj_t pulse_start(size_t n_args, const mp_obj_t *args)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pulse_start_obj, 1, 2, pulse_start);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(pulse_start_obj, 1, 2, pulse_start);
 
 
-STATIC mp_obj_t pulse_done(mp_obj_t self_in)
+static mp_obj_t pulse_done(mp_obj_t self_in)
 {
     pyb_pulse_obj_t *self = self_in;
 
     return mp_obj_new_int(Pulse_Done());
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pulse_done_obj, pulse_done);
+static MP_DEFINE_CONST_FUN_OBJ_1(pulse_done_obj, pulse_done);
 
 
-STATIC mp_obj_t pulse_value(mp_obj_t self_in)
+static mp_obj_t pulse_value(mp_obj_t self_in)
 {
     pyb_pulse_obj_t *self = self_in;
 
     return mp_obj_new_int(self->TIMRx->PCVAL);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pulse_value_obj, pulse_value);
+static MP_DEFINE_CONST_FUN_OBJ_1(pulse_value_obj, pulse_value);
 
 
-STATIC mp_obj_t pulse_irq_flags(mp_obj_t self_in)
+static mp_obj_t pulse_irq_flags(mp_obj_t self_in)
 {
     pyb_pulse_obj_t *self = self_in;
 
     return mp_obj_new_int(self->irq_flags);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(pulse_irq_flags_obj, pulse_irq_flags);
+static MP_DEFINE_CONST_FUN_OBJ_1(pulse_irq_flags_obj, pulse_irq_flags);
 
 
-STATIC mp_obj_t pulse_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t pulse_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_pulse_obj_t *self = self_in;
 
@@ -174,10 +174,10 @@ STATIC mp_obj_t pulse_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(pulse_irq_enable_obj, pulse_irq_enable);
+static MP_DEFINE_CONST_FUN_OBJ_2(pulse_irq_enable_obj, pulse_irq_enable);
 
 
-STATIC mp_obj_t pulse_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t pulse_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_pulse_obj_t *self = self_in;
 
@@ -192,7 +192,7 @@ STATIC mp_obj_t pulse_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(pulse_irq_disable_obj, pulse_irq_disable);
+static MP_DEFINE_CONST_FUN_OBJ_2(pulse_irq_disable_obj, pulse_irq_disable);
 
 
 void PULSE_Handler(void)
@@ -230,7 +230,7 @@ void PULSE_Handler(void)
 }
 
 
-STATIC const mp_rom_map_elem_t pulse_locals_dict_table[] = {
+static const mp_rom_map_elem_t pulse_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_start),        MP_ROM_PTR(&pulse_start_obj) },
     { MP_ROM_QSTR(MP_QSTR_done),         MP_ROM_PTR(&pulse_done_obj) },
@@ -246,7 +246,7 @@ STATIC const mp_rom_map_elem_t pulse_locals_dict_table[] = {
 
     { MP_ROM_QSTR(MP_QSTR_IRQ_CAPTURE),  MP_ROM_INT(TIMR_IRQ_CAPTURE) },
 };
-STATIC MP_DEFINE_CONST_DICT(pulse_locals_dict, pulse_locals_dict_table);
+static MP_DEFINE_CONST_DICT(pulse_locals_dict, pulse_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

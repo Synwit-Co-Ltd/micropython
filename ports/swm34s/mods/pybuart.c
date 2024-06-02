@@ -64,7 +64,7 @@ struct _pyb_uart_obj_t {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_uart_obj_t pyb_uart_obj[PYB_NUM_UARTS] = {
+static pyb_uart_obj_t pyb_uart_obj[PYB_NUM_UARTS] = {
     { {&pyb_uart_type}, .uart_id = PYB_UART_0, .UARTx = UART0, .IRQn = UART0_IRQn, .read_buf = NULL },
     { {&pyb_uart_type}, .uart_id = PYB_UART_1, .UARTx = UART1, .IRQn = UART1_IRQn, .read_buf = NULL },
     { {&pyb_uart_type}, .uart_id = PYB_UART_2, .UARTx = UART2, .IRQn = UART2_IRQn, .read_buf = NULL },
@@ -151,7 +151,7 @@ void uart_tx_strn(pyb_uart_obj_t *self, const char *str, uint len)
 /******************************************************************************/
 /* MicroPython bindings                                                       */
 
-STATIC void uart_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void uart_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_uart_obj_t *self = self_in;
 
@@ -169,7 +169,7 @@ STATIC void uart_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_
 }
 
 
-STATIC mp_obj_t uart_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t uart_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id, ARG_baudrate, ARG_bits, ARG_parity, ARG_stop, ARG_irq, ARG_callback, ARG_priority, ARG_timeout, ARG_rxd, ARG_txd };
     const mp_arg_t allowed_args[] = {
@@ -317,7 +317,7 @@ STATIC mp_obj_t uart_make_new(const mp_obj_type_t *type, size_t n_args, size_t n
 }
 
 
-STATIC mp_obj_t uart_baudrate(size_t n_args, const mp_obj_t *args)
+static mp_obj_t uart_baudrate(size_t n_args, const mp_obj_t *args)
 {
     pyb_uart_obj_t *self = args[0];
 
@@ -334,38 +334,38 @@ STATIC mp_obj_t uart_baudrate(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(uart_baudrate_obj, 1, 2, uart_baudrate);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(uart_baudrate_obj, 1, 2, uart_baudrate);
 
 
-STATIC mp_obj_t uart_any(mp_obj_t self_in)
+static mp_obj_t uart_any(mp_obj_t self_in)
 {
     pyb_uart_obj_t *self = self_in;
 
     return mp_obj_new_int(uart_rx_any(self));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(uart_any_obj, uart_any);
+static MP_DEFINE_CONST_FUN_OBJ_1(uart_any_obj, uart_any);
 
 
-STATIC mp_obj_t uart_full(mp_obj_t self_in)
+static mp_obj_t uart_full(mp_obj_t self_in)
 {
     pyb_uart_obj_t *self = self_in;
 
     return mp_obj_new_bool(UART_IsTXFIFOFull(self->UARTx));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(uart_full_obj, uart_full);
+static MP_DEFINE_CONST_FUN_OBJ_1(uart_full_obj, uart_full);
 
 
 // used when uart_any() return non-zero
-STATIC mp_obj_t uart_readchar(mp_obj_t self_in)
+static mp_obj_t uart_readchar(mp_obj_t self_in)
 {
     pyb_uart_obj_t *self = self_in;
 
     return MP_OBJ_NEW_SMALL_INT(uart_rx_char(self));
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(uart_readchar_obj, uart_readchar);
+static MP_DEFINE_CONST_FUN_OBJ_1(uart_readchar_obj, uart_readchar);
 
 
-STATIC mp_obj_t uart_writechar(mp_obj_t self_in, mp_obj_t char_in)
+static mp_obj_t uart_writechar(mp_obj_t self_in, mp_obj_t char_in)
 {
     pyb_uart_obj_t *self = self_in;
 
@@ -375,19 +375,19 @@ STATIC mp_obj_t uart_writechar(mp_obj_t self_in, mp_obj_t char_in)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(uart_writechar_obj, uart_writechar);
+static MP_DEFINE_CONST_FUN_OBJ_2(uart_writechar_obj, uart_writechar);
 
 
-STATIC mp_obj_t uart_irq_flags(mp_obj_t self_in)
+static mp_obj_t uart_irq_flags(mp_obj_t self_in)
 {
     pyb_uart_obj_t *self = self_in;
 
     return mp_obj_new_int(self->irq_flags);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_1(uart_irq_flags_obj, uart_irq_flags);
+static MP_DEFINE_CONST_FUN_OBJ_1(uart_irq_flags_obj, uart_irq_flags);
 
 
-STATIC mp_obj_t uart_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t uart_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_uart_obj_t *self = self_in;
 
@@ -407,10 +407,10 @@ STATIC mp_obj_t uart_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(uart_irq_enable_obj, uart_irq_enable);
+static MP_DEFINE_CONST_FUN_OBJ_2(uart_irq_enable_obj, uart_irq_enable);
 
 
-STATIC mp_obj_t uart_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
+static mp_obj_t uart_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 {
     pyb_uart_obj_t *self = self_in;
 
@@ -430,10 +430,10 @@ STATIC mp_obj_t uart_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(uart_irq_disable_obj, uart_irq_disable);
+static MP_DEFINE_CONST_FUN_OBJ_2(uart_irq_disable_obj, uart_irq_disable);
 
 
-STATIC void fetch_one_char(pyb_uart_obj_t *self)
+static void fetch_one_char(pyb_uart_obj_t *self)
 {
     uint32_t chr;
 
@@ -456,7 +456,7 @@ STATIC void fetch_one_char(pyb_uart_obj_t *self)
     }
 }
 
-STATIC void UARTX_Handler(uint32_t uart_id)
+static void UARTX_Handler(uint32_t uart_id)
 {
     pyb_uart_obj_t *self = &pyb_uart_obj[uart_id];
 
@@ -528,7 +528,7 @@ void UART3_Handler(void)
 }
 
 
-STATIC const mp_rom_map_elem_t uart_locals_dict_table[] = {
+static const mp_rom_map_elem_t uart_locals_dict_table[] = {
     // instance methods
     { MP_ROM_QSTR(MP_QSTR_baudrate),     MP_ROM_PTR(&uart_baudrate_obj) },
     { MP_ROM_QSTR(MP_QSTR_any),          MP_ROM_PTR(&uart_any_obj) },
@@ -556,10 +556,10 @@ STATIC const mp_rom_map_elem_t uart_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_IRQ_TXEmpty),  MP_ROM_INT(UART_IRQ_TXEmpty) },
     { MP_ROM_QSTR(MP_QSTR_IRQ_TIMEOUT),  MP_ROM_INT(UART_IRQ_TIMEOUT) },
 };
-STATIC MP_DEFINE_CONST_DICT(uart_locals_dict, uart_locals_dict_table);
+static MP_DEFINE_CONST_DICT(uart_locals_dict, uart_locals_dict_table);
 
 
-STATIC uint uart_read(mp_obj_t self_in, void *buf_in, uint len, int *errcode)
+static uint uart_read(mp_obj_t self_in, void *buf_in, uint len, int *errcode)
 {
     pyb_uart_obj_t *self = self_in;
     byte *buf = buf_in;
@@ -590,7 +590,7 @@ STATIC uint uart_read(mp_obj_t self_in, void *buf_in, uint len, int *errcode)
 }
 
 
-STATIC uint uart_write(mp_obj_t self_in, const void *buf_in, uint len, int *errcode)
+static uint uart_write(mp_obj_t self_in, const void *buf_in, uint len, int *errcode)
 {
     pyb_uart_obj_t *self = self_in;
     const char *buf = buf_in;
@@ -601,7 +601,7 @@ STATIC uint uart_write(mp_obj_t self_in, const void *buf_in, uint len, int *errc
 }
 
 
-STATIC uint uart_ioctl(mp_obj_t self_in, uint request, uint arg, int *errcode)
+static uint uart_ioctl(mp_obj_t self_in, uint request, uint arg, int *errcode)
 {
     pyb_uart_obj_t *self = self_in;
     uint ret = 0;
@@ -629,7 +629,7 @@ STATIC uint uart_ioctl(mp_obj_t self_in, uint request, uint arg, int *errcode)
 }
 
 
-STATIC const mp_stream_p_t uart_stream_p = {
+static const mp_stream_p_t uart_stream_p = {
     .read = uart_read,
     .write = uart_write,
     .ioctl = uart_ioctl,

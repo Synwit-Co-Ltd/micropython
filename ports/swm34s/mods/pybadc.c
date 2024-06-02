@@ -45,7 +45,7 @@ typedef struct {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
+static pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
     { {&pyb_adc_type}, .adc_id = PYB_ADC_0, .ADCx = ADC0 },
     { {&pyb_adc_type}, .adc_id = PYB_ADC_1, .ADCx = ADC1 },
 };
@@ -59,7 +59,7 @@ STATIC pyb_adc_obj_t pyb_adc_obj[PYB_NUM_ADCS] = {
 /******************************************************************************/
 /* MicroPython bindings : adc object                                          */
 
-STATIC void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -91,7 +91,7 @@ STATIC void adc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     enum { ARG_id };
     const mp_arg_t allowed_args[] = {
@@ -125,7 +125,7 @@ STATIC mp_obj_t adc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t adc_seq_config(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
+static mp_obj_t adc_seq_config(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 {
     enum { ARG_seq, ARG_chnn, ARG_trig, ARG_samp, ARG_conv };
     const mp_arg_t allowed_args[] = {
@@ -214,10 +214,10 @@ STATIC mp_obj_t adc_seq_config(size_t n_args, const mp_obj_t *pos_args, mp_map_t
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(adc_seq_config_obj, 3, adc_seq_config);
+static MP_DEFINE_CONST_FUN_OBJ_KW(adc_seq_config_obj, 3, adc_seq_config);
 
 
-STATIC mp_obj_t adc_start(mp_obj_t self_in, mp_obj_t seq_id)
+static mp_obj_t adc_start(mp_obj_t self_in, mp_obj_t seq_id)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -225,10 +225,10 @@ STATIC mp_obj_t adc_start(mp_obj_t self_in, mp_obj_t seq_id)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(adc_start_obj, adc_start);
+static MP_DEFINE_CONST_FUN_OBJ_2(adc_start_obj, adc_start);
 
 
-STATIC mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t seq_id)
+static mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t seq_id)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -236,10 +236,10 @@ STATIC mp_obj_t adc_any(mp_obj_t self_in, mp_obj_t seq_id)
 
     return mp_obj_new_bool(any);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(adc_any_obj, adc_any);
+static MP_DEFINE_CONST_FUN_OBJ_2(adc_any_obj, adc_any);
 
 
-STATIC mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t seq_id)
+static mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t seq_id)
 {
     pyb_adc_obj_t *self = self_in;
 
@@ -254,10 +254,10 @@ STATIC mp_obj_t adc_read(mp_obj_t self_in, mp_obj_t seq_id)
     
     return chn_val;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_2(adc_read_obj, adc_read);
+static MP_DEFINE_CONST_FUN_OBJ_2(adc_read_obj, adc_read);
 
 
-STATIC const mp_rom_map_elem_t adc_locals_dict_table[] = {
+static const mp_rom_map_elem_t adc_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_seq_config),  MP_ROM_PTR(&adc_seq_config_obj) },
     { MP_ROM_QSTR(MP_QSTR_start),       MP_ROM_PTR(&adc_start_obj) },
     { MP_ROM_QSTR(MP_QSTR_any),         MP_ROM_PTR(&adc_any_obj) },
@@ -275,7 +275,7 @@ STATIC const mp_rom_map_elem_t adc_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_TRIG_PWM3), MP_ROM_INT(ADC_TRIGGER_PWM3) },
     { MP_ROM_QSTR(MP_QSTR_TRIG_PWM4), MP_ROM_INT(ADC_TRIGGER_PWM4) },
 };
-STATIC MP_DEFINE_CONST_DICT(adc_locals_dict, adc_locals_dict_table);
+static MP_DEFINE_CONST_DICT(adc_locals_dict, adc_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

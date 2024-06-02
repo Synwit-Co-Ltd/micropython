@@ -19,7 +19,7 @@ typedef struct {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_rtc_obj_t pyb_rtc_obj = { {&pyb_rtc_type} };
+static pyb_rtc_obj_t pyb_rtc_obj = { {&pyb_rtc_type} };
 
 
 /******************************************************************************
@@ -57,7 +57,7 @@ uint32_t rtc_get_seconds(void)
 /******************************************************************************/
 /* MicroPython bindings                                                       */
 
-STATIC void rtc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void rtc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     pyb_rtc_obj_t *self = self_in;
 
@@ -65,7 +65,7 @@ STATIC void rtc_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t
 }
 
 
-STATIC mp_obj_t rtc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t rtc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
@@ -73,7 +73,7 @@ STATIC mp_obj_t rtc_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_
 }
 
 
-STATIC mp_obj_t rtc_datetime(size_t n_args, const mp_obj_t *args)
+static mp_obj_t rtc_datetime(size_t n_args, const mp_obj_t *args)
 {
     if(n_args == 1) // get date and time
     {
@@ -111,13 +111,13 @@ STATIC mp_obj_t rtc_datetime(size_t n_args, const mp_obj_t *args)
         return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(rtc_datetime_obj, 1, 2, rtc_datetime);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(rtc_datetime_obj, 1, 2, rtc_datetime);
 
 
-STATIC const mp_rom_map_elem_t rtc_locals_dict_table[] = {
+static const mp_rom_map_elem_t rtc_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_datetime), MP_ROM_PTR(&rtc_datetime_obj) },
 };
-STATIC MP_DEFINE_CONST_DICT(rtc_locals_dict, rtc_locals_dict_table);
+static MP_DEFINE_CONST_DICT(rtc_locals_dict, rtc_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(

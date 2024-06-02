@@ -31,7 +31,7 @@
 /******************************************************************************/
 // MicroPython bindings;
 
-STATIC mp_obj_t machine_info(uint n_args, const mp_obj_t *args)
+static mp_obj_t machine_info(uint n_args, const mp_obj_t *args)
 {
     // get and print clock speeds
     {
@@ -74,50 +74,50 @@ STATIC mp_obj_t machine_info(uint n_args, const mp_obj_t *args)
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(machine_info_obj, 0, 1, machine_info);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(machine_info_obj, 0, 1, machine_info);
 
 
-STATIC mp_obj_t machine_freq(void)
+static mp_obj_t machine_freq(void)
 {
     return mp_obj_new_int(SystemCoreClock);
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_freq_obj, machine_freq);
+static MP_DEFINE_CONST_FUN_OBJ_0(machine_freq_obj, machine_freq);
 
 
-STATIC mp_obj_t machine_reset(void)
+static mp_obj_t machine_reset(void)
 {
     NVIC_SystemReset();
 
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_reset_obj, machine_reset);
+static MP_DEFINE_CONST_FUN_OBJ_0(machine_reset_obj, machine_reset);
 
 
-STATIC mp_obj_t machine_sleep (void)
+static mp_obj_t machine_sleep (void)
 {
     //pyb_sleep_sleep();
     return mp_const_none;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_sleep_obj, machine_sleep);
+static MP_DEFINE_CONST_FUN_OBJ_0(machine_sleep_obj, machine_sleep);
 
 
-STATIC mp_obj_t machine_reset_cause (void)
+static mp_obj_t machine_reset_cause (void)
 {
     //return mp_obj_new_int(pyb_sleep_get_reset_cause());
     return 0;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_reset_cause_obj, machine_reset_cause);
+static MP_DEFINE_CONST_FUN_OBJ_0(machine_reset_cause_obj, machine_reset_cause);
 
 
-STATIC mp_obj_t machine_wake_reason (void)
+static mp_obj_t machine_wake_reason (void)
 {
     //return mp_obj_new_int(pyb_sleep_get_wake_reason());
     return 0;
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_0(machine_wake_reason_obj, machine_wake_reason);
+static MP_DEFINE_CONST_FUN_OBJ_0(machine_wake_reason_obj, machine_wake_reason);
 
 
-STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
+static const mp_rom_map_elem_t machine_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR___name__),            MP_ROM_QSTR(MP_QSTR_machine) },
 
     { MP_ROM_QSTR(MP_QSTR_info),                MP_ROM_PTR(&machine_info_obj) },
@@ -148,7 +148,7 @@ STATIC const mp_rom_map_elem_t machine_module_globals_table[] = {
     // { MP_ROM_QSTR(MP_QSTR_PIN_WAKE),            MP_ROM_INT(PYB_SLP_WAKED_BY_GPIO) },
     // { MP_ROM_QSTR(MP_QSTR_RTC_WAKE),            MP_ROM_INT(PYB_SLP_WAKED_BY_RTC) },
 };
-STATIC MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);
+static MP_DEFINE_CONST_DICT(machine_module_globals, machine_module_globals_table);
 
 
 const mp_obj_module_t mp_module_machine = {

@@ -26,7 +26,7 @@ static uint32_t s_seed;
 /******************************************************************************
 * PRIVATE FUNCTIONS
 ******************************************************************************/
-STATIC uint32_t lfsr (uint32_t input)
+static uint32_t lfsr (uint32_t input)
 {
     return (input >> 1) ^ (-(input & 0x01) & 0x00E10000);
 }

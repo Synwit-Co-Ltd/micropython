@@ -23,7 +23,7 @@ typedef struct {
 /******************************************************************************
  DECLARE PRIVATE DATA
  ******************************************************************************/
-STATIC pyb_flash_obj_t pyb_flash_obj = { {&pyb_flash_type} };
+static pyb_flash_obj_t pyb_flash_obj = { {&pyb_flash_type} };
 
 
 /******************************************************************************
@@ -140,13 +140,13 @@ DRESULT flash_disk_flush(void)
 // MicroPython bindings to expose the internal flash as an object with the
 // block protocol.
 
-STATIC void flash_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
+static void flash_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind)
 {
     mp_printf(print, "<Flash>");
 }
 
 
-STATIC mp_obj_t flash_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
+static mp_obj_t flash_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *all_args)
 {
     mp_arg_check_num(n_args, n_kw, 0, 0, false);
 
@@ -154,7 +154,7 @@ STATIC mp_obj_t flash_make_new(const mp_obj_type_t *type, size_t n_args, size_t 
 }
 
 
-STATIC mp_obj_t flash_readblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t buf)
+static mp_obj_t flash_readblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t buf)
 {
     mp_buffer_info_t bufinfo;
     mp_get_buffer_raise(buf, &bufinfo, MP_BUFFER_WRITE);
@@ -163,10 +163,10 @@ STATIC mp_obj_t flash_readblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t 
 
     return MP_OBJ_NEW_SMALL_INT(res != RES_OK); // return of 0 means success
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(flash_readblocks_obj, flash_readblocks);
+static MP_DEFINE_CONST_FUN_OBJ_3(flash_readblocks_obj, flash_readblocks);
 
 
-STATIC mp_obj_t flash_writeblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t buf)
+static mp_obj_t flash_writeblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t buf)
 {
     mp_buffer_info_t bufinfo;
     mp_get_buffer_raise(buf, &bufinfo, MP_BUFFER_READ);
@@ -175,10 +175,10 @@ STATIC mp_obj_t flash_writeblocks(mp_obj_t self_in, mp_obj_t block_num, mp_obj_t
 
     return MP_OBJ_NEW_SMALL_INT(res != RES_OK); // return of 0 means success
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(flash_writeblocks_obj, flash_writeblocks);
+static MP_DEFINE_CONST_FUN_OBJ_3(flash_writeblocks_obj, flash_writeblocks);
 
 
-STATIC mp_obj_t flash_ioctl(mp_obj_t self_in, mp_obj_t cmd_in, mp_obj_t arg_in)
+static mp_obj_t flash_ioctl(mp_obj_t self_in, mp_obj_t cmd_in, mp_obj_t arg_in)
 {
     uint cmd = mp_obj_get_int(cmd_in);
     switch(cmd)
@@ -193,15 +193,15 @@ STATIC mp_obj_t flash_ioctl(mp_obj_t self_in, mp_obj_t cmd_in, mp_obj_t arg_in)
         default: return mp_const_none;
     }
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_3(flash_ioctl_obj, flash_ioctl);
+static MP_DEFINE_CONST_FUN_OBJ_3(flash_ioctl_obj, flash_ioctl);
 
 
-STATIC const mp_rom_map_elem_t flash_locals_dict_table[] = {
+static const mp_rom_map_elem_t flash_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_readblocks),  MP_ROM_PTR(&flash_readblocks_obj) },
     { MP_ROM_QSTR(MP_QSTR_writeblocks), MP_ROM_PTR(&flash_writeblocks_obj) },
     { MP_ROM_QSTR(MP_QSTR_ioctl),       MP_ROM_PTR(&flash_ioctl_obj) },
 };
-STATIC MP_DEFINE_CONST_DICT(flash_locals_dict, flash_locals_dict_table);
+static MP_DEFINE_CONST_DICT(flash_locals_dict, flash_locals_dict_table);
 
 
 MP_DEFINE_CONST_OBJ_TYPE(
