@@ -149,7 +149,7 @@ void SDRAM_config(void)
 	SDRAM_InitStruct.CASLatency = SDRAM_CASLATENCY_2;
 	SDRAM_InitStruct.TimeTRP  = SDRAM_TRP_2;
 	SDRAM_InitStruct.TimeTRCD = SDRAM_TRCD_2;
-	SDRAM_InitStruct.TimeTRFC  = SDRAM_TRFC_7;
+	SDRAM_InitStruct.TimeTRC  = SDRAM_TRC_7;
 	SDRAM_Init(&SDRAM_InitStruct);
 }
 

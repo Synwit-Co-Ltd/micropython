@@ -23,12 +23,16 @@ void GPIO_ClrBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);		//将参数指
 void GPIO_InvBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);		//将参数指定的从n开始的w位连续引脚的电平反转
 uint32_t GPIO_GetBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);	//读取参数指定的从n开始的w位连续引脚的电平状态
 
-void GPIO_AtomicSetBit(GPIO_TypeDef * GPIOx, uint32_t n);
-void GPIO_AtomicClrBit(GPIO_TypeDef * GPIOx, uint32_t n);
-void GPIO_AtomicInvBit(GPIO_TypeDef * GPIOx, uint32_t n);
+
 void GPIO_AtomicSetBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);
 void GPIO_AtomicClrBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);
 void GPIO_AtomicInvBits(GPIO_TypeDef * GPIOx, uint32_t n, uint32_t w);
+
+
+// for compatibility
+#define GPIO_AtomicSetBit	GPIO_SetBit
+#define GPIO_AtomicClrBit	GPIO_ClrBit
+#define GPIO_AtomicInvBit	GPIO_InvBit
 
 
 #endif //__SWM341_GPIO_H__

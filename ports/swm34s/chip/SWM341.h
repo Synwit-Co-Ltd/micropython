@@ -475,12 +475,14 @@ typedef struct {
 
 #define SYS_PRSTR1_GPIOE_Pos		0
 #define SYS_PRSTR1_GPIOE_Msk		(0x01 << SYS_PRSTR1_GPIOE_Pos)
-#define SYS_PRSTR1_SPI2_Pos			8
-#define SYS_PRSTR1_SPI2_Msk			(0x01 << SYS_PRSTR1_SPI2_Pos)
 #define SYS_PRSTR1_SDRAM_Pos		12
 #define SYS_PRSTR1_SDRAM_Msk		(0x01 << SYS_PRSTR1_SDRAM_Pos)
+#define SYS_PRSTR1_SFC_Pos			13
+#define SYS_PRSTR1_SFC_Msk			(0x01 << SYS_PRSTR1_SFC_Pos)
 #define SYS_PRSTR1_ADC1_Pos			16
 #define SYS_PRSTR1_ADC1_Msk			(0x01 << SYS_PRSTR1_ADC1_Pos)
+#define SYS_PRSTR1_CAN1_Pos			17
+#define SYS_PRSTR1_CAN1_Msk			(0x01 << SYS_PRSTR1_CAN1_Pos)
 #define SYS_PRSTR1_RTC_Pos			19
 #define SYS_PRSTR1_RTC_Msk			(0x01 << SYS_PRSTR1_RTC_Pos)
 #define SYS_PRSTR1_IOFILT_Pos		20
@@ -489,6 +491,10 @@ typedef struct {
 #define SYS_PRSTR1_BTIMR_Msk		(0x01 << SYS_PRSTR1_BTIMR_Pos)
 #define SYS_PRSTR1_JPEG_Pos			25
 #define SYS_PRSTR1_JPEG_Msk			(0x01 << SYS_PRSTR1_JPEG_Pos)
+#define SYS_PRSTR1_DAC_Pos			26
+#define SYS_PRSTR1_DAC_Msk			(0x01 << SYS_PRSTR1_DAC_Pos)
+#define SYS_PRSTR1_QEI_Pos			27
+#define SYS_PRSTR1_QEI_Msk			(0x01 << SYS_PRSTR1_QEI_Pos)
 
 #define SYS_HRCCR_ON_Pos			0		//High speed RC ON
 #define SYS_HRCCR_ON_Msk			(0x01 << SYS_HRCCR_ON_Pos)
@@ -648,10 +654,6 @@ typedef struct {
          uint32_t RESERVED4[63];
 
 	__IO uint32_t OPEND;              		//开漏使能
-    
-         uint32_t RESERVED5[63];
-	
-	__IO uint32_t DRVST;					//驱动强度选择，0 4mA   1 8mA
 } PORT_TypeDef;
 
 
@@ -691,10 +693,8 @@ typedef struct {
 	__IO uint32_t INTSTAT;				    //INTSTAT.PIN0 = INTRAWSTAT.PIN0 & INTEN.PIN0
 
 	__IO uint32_t INTCLR;				    //写1清除中断标志，只对边沿触发中断有用
-	
-	__IO uint32_t DMAEN;
-	
-		 uint32_t RESERVED[2];
+		
+		 uint32_t RESERVED[3];
 	
 	__IO uint32_t IDR;
 	
@@ -2704,8 +2704,8 @@ typedef struct {
 
 #define SDRAMC_TIM_TRCD_Pos		    0		//Row to column delay, Ie. Activate to Command delay
 #define SDRAMC_TIM_TRCD_Msk		    (0x03 << SDRAMC_TIM_TRCD_Pos)
-#define SDRAMC_TIM_TRFC_Pos		    2		//Refresh Cycle
-#define SDRAMC_TIM_TRFC_Msk		    (0x0F << SDRAMC_TIM_TRFC_Pos)
+#define SDRAMC_TIM_TRC_Pos		    2		//Activate to Activate on same bank
+#define SDRAMC_TIM_TRC_Msk		    (0x0F << SDRAMC_TIM_TRC_Pos)
 #define SDRAMC_TIM_TRP_Pos		    6		//Row precharge time,  Ie. Precharge to Activate delay
 #define SDRAMC_TIM_TRP_Msk		    (0x03 << SDRAMC_TIM_TRP_Pos)
 #define SDRAMC_TIM_T100US_Pos		8

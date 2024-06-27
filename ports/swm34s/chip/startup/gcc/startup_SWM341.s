@@ -20,7 +20,7 @@ __StackTop:
     .globl    __HeapBase
     .globl    __HeapLimit
 __HeapBase:
-    .space    0x0000
+    .space    0x1000
 __HeapLimit:
 
 
