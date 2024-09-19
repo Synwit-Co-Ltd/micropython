@@ -240,7 +240,7 @@ static mp_obj_t timer_irq_enable(mp_obj_t self_in, mp_obj_t irq_trigger)
     {
         self->irq_trigger |= TIMR_IRQ_TIMEOUT;
 
-        TIMR_INTEn(self->TIMRx);
+        TIMR_INTEn(self->TIMRx, TIMR_IT_TO);
     }
 
     return mp_const_none;
@@ -258,7 +258,7 @@ static mp_obj_t timer_irq_disable(mp_obj_t self_in, mp_obj_t irq_trigger)
     {
         self->irq_trigger &= ~TIMR_IRQ_TIMEOUT;
 
-        TIMR_INTDis(self->TIMRx);
+        TIMR_INTDis(self->TIMRx, TIMR_IT_TO);
     }
 
     return mp_const_none;
@@ -268,9 +268,9 @@ static MP_DEFINE_CONST_FUN_OBJ_2(timer_irq_disable_obj, timer_irq_disable);
 
 void TIMR_Handler(pyb_timer_obj_t *self)
 {
-    if(TIMR_INTStat(self->TIMRx))
+    if(TIMR_INTStat(self->TIMRx, TIMR_IT_TO))
     {
-        TIMR_INTClr(self->TIMRx);
+        TIMR_INTClr(self->TIMRx, TIMR_IT_TO);
 
         if(self->irq_trigger & TIMR_IRQ_TIMEOUT)
             self->irq_flags |= TIMR_IRQ_TIMEOUT;
