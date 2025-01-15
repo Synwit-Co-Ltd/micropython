@@ -16,6 +16,7 @@
 #include "mods/pybi2c.h"
 #include "mods/pybadc.h"
 #include "mods/pybpwm.h"
+#include "mods/pyblcd.h"
 #include "mods/pybcan.h"
 #include "mods/pybrtc.h"
 #include "mods/pybwdt.h"
@@ -134,6 +135,7 @@ static const mp_rom_map_elem_t machine_module_globals_table[] = {
     { MP_ROM_QSTR(MP_QSTR_I2C),                 MP_ROM_PTR(&pyb_i2c_type) },
     { MP_ROM_QSTR(MP_QSTR_ADC),                 MP_ROM_PTR(&pyb_adc_type) },
     { MP_ROM_QSTR(MP_QSTR_PWM),                 MP_ROM_PTR(&pyb_pwm_type) },
+    { MP_ROM_QSTR(MP_QSTR_LCD),                 MP_ROM_PTR(&pyb_lcd_type) },
     { MP_ROM_QSTR(MP_QSTR_CAN),                 MP_ROM_PTR(&pyb_can_type) },
     { MP_ROM_QSTR(MP_QSTR_RTC),                 MP_ROM_PTR(&pyb_rtc_type) },
     { MP_ROM_QSTR(MP_QSTR_WDT),                 MP_ROM_PTR(&pyb_wdt_type) },

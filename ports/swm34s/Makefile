@@ -56,6 +56,7 @@ C_MODS = $(addprefix mods/, \
 	pybcan.c \
 	pybadc.c \
 	pybpwm.c \
+	pyblcd.c \
     pybrtc.c \
     pybwdt.c \
 )

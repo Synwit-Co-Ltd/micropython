@@ -519,6 +519,32 @@ deadzone(ch)
 
 
 &nbsp;
+## LCD
+### test
+``` python
+import machine, time
+from machine import Pin, LCD
+
+lcd_bl  = machine.Pin('PD0', Pin.OUT)	# backlight
+lcd_bl.high()
+
+lcd_rst = machine.Pin('PM7', Pin.OUT)
+lcd_rst.low()
+time.sleep_ms(50)
+lcd_rst.high()
+time.sleep_ms(50)
+
+lcd = machine.LCD()
+
+lcd.fill(0x1F << 11)
+time.sleep(2)
+lcd.fill(0x3F <<  5)
+time.sleep(2)
+lcd.fill(0x1F <<  0)
+```
+
+
+&nbsp;
 ## CAN
 ### 自测
 ``` python
